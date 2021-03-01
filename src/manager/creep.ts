@@ -7,12 +7,50 @@ import { HarvesterRole } from "../roles/harvester"
 import { BuilderRole } from "../roles/builder"
 import { UpgraderRole } from "roles/upgrader";
 
+interface CreepCollection {
+  [role: number]: Creep[]
+}
+
 export class CreepManager extends Manager {
+  private creepCollection: CreepCollection = {};
+
   public constructor() {
     super({
       name: CreepManager.name,
       priority: ManagerPriority.Standard
     });
+
+    this.creepCollection = this.createCollection();
+
+    // console.log(JSON.stringify(this.creepCollection))
+  }
+
+  public collection(): CreepCollection {
+    return this.creepCollection;
+  }
+
+  private createCollection(): CreepCollection {
+    let collection: CreepCollection = {};
+
+    for (let name in Game.creeps) {
+      let creep = Game.creeps[name];
+
+      if (creep.memory.role === undefined) {
+        console.log("Creep with unknown role: " + creep.name + " Pos: " + creep.pos);
+        console.log("Removing creep from game...")
+
+        creep.suicide();
+        continue;
+      }
+
+      if (collection[creep.memory.role] === undefined) {
+        collection[creep.memory.role] = [];
+      }
+
+      collection[creep.memory.role].push(creep);
+    }
+
+    return collection;
   }
 
   /**

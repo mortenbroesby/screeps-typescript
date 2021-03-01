@@ -9,7 +9,7 @@ export class DebugManager extends Manager {
   public constructor() {
     super({
       name: DebugManager.name,
-      priority: ManagerPriority.Standard
+      priority: ManagerPriority.None
     });
 
     this.logInitialDebugMessage();

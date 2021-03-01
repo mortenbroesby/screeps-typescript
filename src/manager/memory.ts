@@ -6,7 +6,7 @@ export class MemoryManager extends Manager {
   public constructor() {
     super({
       name: MemoryManager.name,
-      priority: ManagerPriority.Standard
+      priority: ManagerPriority.Critical
     });
   }
 

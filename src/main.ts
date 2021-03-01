@@ -1,8 +1,5 @@
 import { ErrorMapper } from "utils/ErrorMapper";
 
-// Expose exports
-export * from './exports';
-
 import { Brain } from "global/brain";
 
 // Initialise main brain

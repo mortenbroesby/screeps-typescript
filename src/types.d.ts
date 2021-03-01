@@ -1,10 +1,9 @@
 // example declaration file - remove these and add your own custom typings
 
-// memory extension samples
+
 interface CreepMemory {
   role: number;
-  room?: string;
-  working?: boolean;
+
   building?: boolean;
 }
 
