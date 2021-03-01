@@ -12,7 +12,7 @@ export class BuilderRole extends CreepRole {
   }
 
   public run(): void {
-    logger.debug("BuilderRole is running.");
+    // logger.debug("BuilderRole is running.");
 
     this.tryBuilding();
   }

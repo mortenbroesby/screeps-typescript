@@ -1,4 +1,6 @@
-import { Manager, ManagerPriority } from "./abstract";
+import { ManagerPriority } from "enums";
+import { logger } from "tools/logger";
+import { Manager } from "./abstract";
 
 export class MemoryManager extends Manager {
   public constructor() {
@@ -16,7 +18,8 @@ export class MemoryManager extends Manager {
     for (const name in Memory.creeps) {
       if (!(name in Game.creeps)) {
         delete Memory.creeps[name];
-        console.log('Clearing non-existing creep memory:', name);
+
+        logger.debug('Clearing non-existing creep memory:', name);
       }
     }
   }

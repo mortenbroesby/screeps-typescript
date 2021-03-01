@@ -1,7 +1,9 @@
 import dayjs from "dayjs";
+
 import { logger } from "tools/logger";
 
-import { Manager, ManagerPriority } from "./abstract";
+import { Manager } from "./abstract";
+import { ManagerPriority } from "enums";
 
 export class DebugManager extends Manager {
   public constructor() {
@@ -17,11 +19,7 @@ export class DebugManager extends Manager {
    * Game loop.
    */
   public loop(): void {
-    logger.debug(`Current game tick is ${Game.time}`);
-
-    for (var name in Game.rooms) {
-      logger.debug('Room "' + name + '" has ' + Game.rooms[name].energyAvailable + ' energy');
-    }
+    this.logGameInfo({ shouldLog: false });
   }
 
   /**
@@ -39,5 +37,15 @@ export class DebugManager extends Manager {
     console.log(`Time: ${currentTime}`)
 
     console.log("----------------------------")
+  }
+
+  private logGameInfo({ shouldLog }: { shouldLog: boolean; }): void {
+    if (!shouldLog) return;
+
+    logger.debug(`Current game tick is ${Game.time}`);
+
+    for (var name in Game.rooms) {
+      logger.debug('Room "' + name + '" has ' + Game.rooms[name].energyAvailable + ' energy');
+    }
   }
 }

@@ -12,7 +12,7 @@ export class UpgraderRole extends CreepRole {
   }
 
   public run(): void {
-    logger.debug("UpgraderRole is running.");
+    // logger.debug("UpgraderRole is running.");
 
     this.tryUpgrading();
   }
@@ -20,7 +20,7 @@ export class UpgraderRole extends CreepRole {
   public tryUpgrading(): void {
     const roomController = this.creep.room.controller;
     if (!roomController) {
-      return console.log("No room controller!");
+      return logger.error("No room controller!");
     }
 
     if (this.creep.store[RESOURCE_ENERGY] == 0) {

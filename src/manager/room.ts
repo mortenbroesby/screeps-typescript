@@ -1,6 +1,5 @@
-import { logger } from "tools/logger";
-
-import { Manager, ManagerPriority } from "./abstract";
+import { ManagerPriority } from "enums";
+import { Manager } from "./abstract";
 
 export class RoomManager extends Manager {
   public constructor() {

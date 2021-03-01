@@ -2,6 +2,9 @@
 import { logLevel, LogConfig} from "./logLevel";
 import { settings } from "./settings";
 
+export * from './logLevel';
+export * from './settings';
+
 interface MainConfig {
   logLevel: LogConfig;
   settings: MemorySettings;

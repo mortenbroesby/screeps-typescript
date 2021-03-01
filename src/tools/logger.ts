@@ -1,5 +1,3 @@
-import Config from "config";
-
 import { LogLevel } from "../enums/loglevel";
 
 class Logger {

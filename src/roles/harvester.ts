@@ -12,7 +12,7 @@ export class HarvesterRole extends CreepRole {
   }
 
   public run(): void {
-    logger.debug("HarvesterRole is running.");
+    // logger.debug("HarvesterRole is running.");
 
     this.tryHarvesting();
   }

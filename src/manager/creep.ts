@@ -1,12 +1,11 @@
 import { logger } from "tools/logger";
 
-import { Manager, ManagerPriority } from "./abstract";
+import { Manager } from "./abstract";
+import { ManagerPriority, Role } from "enums";
 
 import { HarvesterRole } from "../roles/harvester"
 import { BuilderRole } from "../roles/builder"
 import { UpgraderRole } from "roles/upgrader";
-import { spawn } from "child_process";
-import { Role } from "enums";
 
 export class CreepManager extends Manager {
   public constructor() {
