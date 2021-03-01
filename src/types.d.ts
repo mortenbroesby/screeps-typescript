@@ -8,9 +8,12 @@ interface CreepMemory {
   building?: boolean;
 }
 
+interface MemorySettings {
+  version: string;
+}
+
 interface Memory {
-  uuid: number;
-  log: any;
+  settings: MemorySettings;
 }
 
 // `global` extension samples
