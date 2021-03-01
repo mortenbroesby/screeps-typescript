@@ -22,14 +22,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/screepers/screeps-typescript-starter.git"
+    "url": "git+https://github.com/mortenbroesby/screeps-typescript.git"
   },
   "author": "Morten Broesby-Olsen",
-  "license": "Unlicense",
-  "bugs": {
-    "url": "https://github.com/screepers/screeps-typescript-starter/issues"
-  },
-  "homepage": "https://github.com/screepers/screeps-typescript-starter#readme",
+  "license": "Unlicensed",
+  "homepage": "https://github.com/mortenbroesby/screeps-typescriptr#readme",
   "engines": {
     "node": "10.x || 12.x"
   },

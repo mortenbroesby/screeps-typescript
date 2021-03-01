@@ -6,7 +6,7 @@ At the time of writing, it's very early on, and as such not all code is expected
 
 
 ## Note
-This project is based on Screeps Typescript Starter.
+This project is based on Screeps Typescript Starter. [Link](https://github.com/screepers/screeps-typescript-starter).
 
 Screeps Typescript Starter is a starting point for a Screeps AI written in Typescript. It provides everything you need to start writing your AI whilst leaving `main.ts` as empty as possible.
 
