@@ -1,4 +1,3 @@
-import { logger } from "tools/logger";
 import { Manager, ManagerPriority } from "./abstract";
 
 export class MemoryManager extends Manager {

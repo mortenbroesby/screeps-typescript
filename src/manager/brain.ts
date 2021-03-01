@@ -12,16 +12,15 @@ import { RoomManager } from "./room";
 export class Brain {
   private managers: Manager[] = [];
 
-  constructor() {
-    this.setDefaults();
-    this.initialiseManagers();
-  }
-
   get version(): string {
-    return `1.0.1`;
+    return "1.0.3";
   }
 
-  private setDefaults(): void {
+  constructor() {
+    this.initialise();
+  }
+
+  private initialise(): void {
     const logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.INFO;
 
     logger.setLogLevel(logLevel)
@@ -31,10 +30,8 @@ export class Brain {
       version: this.version
     };
 
-    logger.info(`Brain version: ${this.version}`)
-  }
+    console.log(`Brain version: ${this.version}`)
 
-  private initialiseManagers(): void {
     this.managers = [
       new DebugManager(),
       new CreepManager(),

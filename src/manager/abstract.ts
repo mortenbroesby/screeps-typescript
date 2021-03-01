@@ -13,20 +13,19 @@ export interface ManagerSettings {
 }
 
 export abstract class Manager {
-  private name: string = "AbstractManager";
-
-  private priority: ManagerPriority = ManagerPriority.Standard;
+  private _name: string = "AbstractManager";
+  private _priority: ManagerPriority = ManagerPriority.Standard;
 
   public get settings(): ManagerSettings {
     return {
-      name: this.name,
-      priority: this.priority
+      name: this._name,
+      priority: this._priority
     }
   }
 
   constructor({ name, priority }: { name: string; priority: ManagerPriority; }) {
-    this.name = name;
-    this.priority = priority;
+    this._name = name;
+    this._priority = priority;
   }
 
   public loop(): void {

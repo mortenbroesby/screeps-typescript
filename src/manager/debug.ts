@@ -29,13 +29,15 @@ export class DebugManager extends Manager {
    */
   private logInitialDebugMessage(): void {
     console.log("----------------------------")
-    console.log("Is production? -", PRODUCTION ? "Yes." : "No.")
+
+    console.log("Is this production?", PRODUCTION ? "Yes." : "No.")
 
     const currentDate = dayjs().format('MM.DD.YYYY');
     const currentTime = dayjs().format('HH:mm:ss');
 
-    console.log(`Build date: ${currentDate}`)
-    console.log(`Build time: ${currentTime}`)
+    console.log(`Date: ${currentDate}`)
+    console.log(`Time: ${currentTime}`)
+
     console.log("----------------------------")
   }
 }

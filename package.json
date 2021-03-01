@@ -6,8 +6,8 @@
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "build": "rollup -c",
-    "deploy-prod": "cross-env NODE_ENV=production rollup -cw",
-    "deploy-dev": "cross-env NODE_ENV=development rollup -cw",
+    "deploy-prod": "cross-env NODE_ENV=production rollup -c",
+    "deploy-dev": "cross-env NODE_ENV=development rollup -c",
     "push-main": "rollup -c --environment DEST:main",
     "push-pserver": "rollup -c --environment DEST:pserver",
     "push-season": "rollup -c --environment DEST:season",
