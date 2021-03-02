@@ -47,8 +47,9 @@ export class CreepManager extends Manager {
 
     for (const name in Game.creeps) {
       const creep = Game.creeps[name];
+      const creepRole: Role = creep.memory.role ?? Role.Unassigned;
 
-      if (creep.memory.role === undefined) {
+      if (creepRole === Role.Unassigned || creepRole === undefined) {
         console.log(`Creep with unknown role: ${creep.name} Pos: ${creep.pos.roomName}`);
         console.log("Removing creep from game...");
 
@@ -56,11 +57,11 @@ export class CreepManager extends Manager {
         continue;
       }
 
-      if (collection[creep.memory.role] === undefined) {
-        collection[creep.memory.role] = [];
+      if (collection[creepRole] === undefined) {
+        collection[creepRole] = [creep];
+      } else {
+        collection[creepRole].push(creep);
       }
-
-      collection[creep.memory.role].push(creep);
     }
 
     return collection;
@@ -70,6 +71,13 @@ export class CreepManager extends Manager {
    * Game loop.
    */
   public loop(): void {
+    const creepsInRoom = this.currentRoom.find(FIND_MY_CREEPS);
+
+    this._trySpawning(creepsInRoom);
+    this._tryAssigningRole(creepsInRoom);
+  }
+
+  private _trySpawning(creeps: Creep[]): void {
     if (this.spawn === undefined) {
       return logger.info(`[No spawn] Skipping spawning: ${this.currentRoom.name}`);
     }
@@ -85,9 +93,7 @@ export class CreepManager extends Manager {
       return logger.info(`[Spawning] Skipping spawning: ${this.currentRoom.name}`);
     }
 
-    const creepsInRoom = this.currentRoom.find(FIND_MY_CREEPS);
-
-    const harvesters = _.filter(creepsInRoom, creep => creep.memory.role === Role.Harvester);
+    const harvesters = _.filter(creeps, creep => creep.memory.role === Role.Harvester);
 
     logger.info(`Harvesters: ${harvesters.length}`);
 
@@ -105,8 +111,10 @@ export class CreepManager extends Manager {
         logger.info("Spawned new harvester: " + newName);
       }
     }
+  }
 
-    creepsInRoom.forEach((creep: Creep) => {
+  private _tryAssigningRole(creeps: Creep[]): void {
+    creeps.forEach((creep: Creep) => {
       const creepRole: Role = creep.memory.role ?? Role.Unassigned;
 
       type RoleFunction = () => CreepRole;
