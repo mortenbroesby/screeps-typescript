@@ -1,15 +1,14 @@
-# Screeps Typescript
+# Screeps Typescript Project
 
 This is a repository focused on automating the Developer-centric game called [Screeps](https://screeps.com/).
 
 At the time of writing, it's very early on, and as such not all code is expected to work.
 
-
 ## Note
+
 This project is based on Screeps Typescript Starter. [Link](https://github.com/screepers/screeps-typescript-starter).
 
 Screeps Typescript Starter is a starting point for a Screeps AI written in Typescript. It provides everything you need to start writing your AI whilst leaving `main.ts` as empty as possible.
-
 
 ## Basic Usage
 
@@ -33,7 +32,6 @@ yarn
 
 Fire up your preferred editor with typescript installed and you are good to go!
 
-
 ### Rollup and code upload
 
 Screeps Typescript Starter uses rollup to compile your typescript and upload it to a screeps server.
@@ -46,14 +44,11 @@ You can use `-cw` instead of `-c` to automatically re-run when your source code 
 
 Finally, there are also NPM scripts that serve as aliases for these commands in `package.json` for IDE integration. Running `npm run push-main` is equivalent to `rollup -c --environment DEST:main`, and `npm run watch-sim` is equivalent to `rollup -cw --dest sim`.
 
-
 #### Important! To upload code to a private server, you must have [screepsmod-auth](https://github.com/ScreepsMods/screepsmod-auth) installed and configured!
-
 
 ## Typings
 
 The type definitions for Screeps come from [typed-screeps](https://github.com/screepers/typed-screeps). If you find a problem or have a suggestion, please open an issue there.
-
 
 ## Documentation
 
@@ -62,7 +57,6 @@ We've also spent some time reworking the documentation from the ground-up, which
 Maintaining the docs will also become a more community-focused effort, which means you too, can take part in improving the docs for this starter kit.
 
 To visit the docs, [click here](https://screepers.gitbook.io/screeps-typescript-starter/).
-
 
 ## Contributing
 
