@@ -1,46 +1,83 @@
+import { defaultCreepMemory } from "config/creep";
 import { logger } from "tools/logger";
+import { executeAction } from "tools/utils";
 
-import { CreepRole } from "./abstract";
+import { BaseRole, BaseRoleMemory } from "./abstract";
+import { harvestTask, upgradeTask } from "./shared";
 
-export class UpgraderRole extends CreepRole {
+type UpgraderState = "harvest" | "upgrade";
+
+export interface UpgraderMemory extends BaseRoleMemory {
+  state: UpgraderState;
+}
+
+export class UpgraderRole extends BaseRole<UpgraderMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({
       role: "Upgrader",
       homeRoom,
       creep
     });
+
+    this.memory = {
+      ...defaultCreepMemory,
+      homeRoom: homeRoom.name,
+      role: "Upgrader",
+      state: "harvest"
+    };
+
+    this.run();
+  }
+
+  public get state(): UpgraderState {
+    return this.memory.state;
+  }
+  public set state(state: UpgraderState) {
+    this.memory.state = state;
   }
 
   public run(): void {
-    // logger.debug("UpgraderRole is running.");
-
-    this.tryUpgrading();
+    this._setState();
+    this._getTask();
   }
 
-  public tryUpgrading(): void {
-    const roomController = this.creep.room.controller;
-    if (!roomController) {
-      return logger.error(`No room controller for creep: ${this.creep.name}!`);
+  private _setState(): void {
+    if (this.state !== "harvest" && this.creep.store[RESOURCE_ENERGY] === 0) {
+      this.state = "harvest";
+      this.creep.say("🔄 harvest");
+    } else if (this.state !== "upgrade" && this.creep.store.getFreeCapacity() === 0) {
+      this.state = "upgrade";
+      this.creep.say("⚡️ upgrade");
     }
+  }
 
-    const storedEnergy = this.creep.store[RESOURCE_ENERGY];
+  private _getTask(): void {
+    type TaskMap = {
+      [key in UpgraderState]: () => void;
+    };
 
-    if (storedEnergy === 0) {
-      const source = this.creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-      if (!source) {
-        return logger.debug(`creep ${this.creep.name} has no source`);
-      }
+    const taskMap: TaskMap = {
+      harvest: () => this._tryHarvesting(),
+      upgrade: () => this._tryUpgrading()
+    };
 
-      const attemptHarvesting = this.creep.harvest(source);
-      if (attemptHarvesting === ERR_NOT_IN_RANGE) {
-        this.creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-    } else {
-      const attemptControllerUpgrade = this.creep.upgradeController(roomController);
+    const didExecute = executeAction(taskMap[this.state]);
+    if (!didExecute) {
+      logger.info(`Creep task mismatch: ${this.creep.name}`);
+    }
+  }
 
-      if (attemptControllerUpgrade === ERR_NOT_IN_RANGE) {
-        this.creep.moveTo(roomController, { visualizePathStyle: { stroke: "#ffffff" } });
-      }
+  private _tryHarvesting(): void {
+    const didHarvest = harvestTask(this.creep);
+    if (!didHarvest) {
+      logger.debug(`Creep harvest unsuccessful: ${this.creep.name}`);
+    }
+  }
+
+  private _tryUpgrading(): void {
+    const didUpgrade = upgradeTask(this.creep);
+    if (!didUpgrade) {
+      logger.debug(`Creep harvest unsuccessful: ${this.creep.name}`);
     }
   }
 }

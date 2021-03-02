@@ -1,9 +1,10 @@
-import Constants from "global/constants";
-import { defaultSettings } from "config/settings";
-
 import { logger } from "tools/logger";
-import { Service } from "./abstract";
+
+import Constants from "global/constants";
+
 import { defaultCreepMemory } from "config/creep";
+import { defaultSettings } from "config/settings";
+import { Service } from "./abstract";
 
 export class GlobalMemoryService extends Service {
   public constructor() {

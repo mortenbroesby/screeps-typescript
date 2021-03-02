@@ -1,8 +1,11 @@
+import { defaultCreepMemory } from "config/creep";
 import { logger } from "tools/logger";
+import { executeAction } from "tools/utils";
 
-import { CreepRole } from "./abstract";
+import { BaseRole, BaseRoleMemory } from "./abstract";
+import { depositTask, harvestTask } from "./shared";
 
-const targetStructures = (room: Room) => {
+const getTargetStructures = (room: Room) => {
   const targets = room.find(FIND_STRUCTURES, {
     filter: structure => {
       type MatchedStructure = StructureExtension | StructureSpawn | StructureTower;
@@ -22,44 +25,81 @@ const targetStructures = (room: Room) => {
   return targets;
 };
 
-export class HarvesterRole extends CreepRole {
+type HarvesterState = "harvest" | "deposit";
+
+export interface HarvesterMemory extends BaseRoleMemory {
+  state: HarvesterState;
+}
+
+export class HarvesterRole extends BaseRole<HarvesterMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({
       role: "Harvester",
       homeRoom,
       creep
     });
+
+    this.memory = {
+      ...defaultCreepMemory,
+      homeRoom: homeRoom.name,
+      role: "Harvester",
+      state: "harvest"
+    };
+
+    this.run();
+  }
+
+  public get state(): HarvesterState {
+    return this.memory.state;
+  }
+  public set state(state: HarvesterState) {
+    this.memory.state = state;
   }
 
   public run(): void {
-    // logger.debug("HarvesterRole is running.");
-
-    this.tryHarvesting();
+    this._setState();
+    this._getTask();
   }
 
-  public tryHarvesting(): void {
-    // console.log("Creep name: ", this.creep.name);
+  private _setState(): void {
+    if (this.state !== "harvest" && this.creep.store[RESOURCE_ENERGY] === 0) {
+      this.state = "harvest";
+      this.creep.say("🔄 harvest");
+    } else if (this.state !== "deposit" && this.creep.store.getFreeCapacity() === 0) {
+      this.state = "deposit";
+      this.creep.say("⚡️ deposit");
+    }
+  }
 
-    if (this.creep.store.getFreeCapacity() > 0) {
-      const source = this.creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
-      if (!source) {
-        return logger.debug(`creep ${this.creep.name} has no source`);
-      }
+  private _getTask(): void {
+    type TaskMap = {
+      [key in HarvesterState]: () => void;
+    };
 
-      const attemptHarvesting = this.creep.harvest(source);
-      if (attemptHarvesting === ERR_NOT_IN_RANGE) {
-        this.creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
-      }
-    } else {
-      const targets = targetStructures(this.creep.room);
+    const taskMap: TaskMap = {
+      harvest: () => this._tryHarvesting(),
+      deposit: () => this._tryDepositing()
+    };
 
-      if (targets.length > 0) {
-        const sortedTargets = _.sortBy(targets, target => this.creep.pos.getRangeTo(target));
+    const didExecute = executeAction(taskMap[this.state]);
+    if (!didExecute) {
+      logger.info(`Creep task mismatch: ${this.creep.name}`);
+    }
+  }
 
-        if (this.creep.transfer(sortedTargets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          this.creep.moveTo(sortedTargets[0], { visualizePathStyle: { stroke: "#ffffff" } });
-        }
-      }
+  private _tryHarvesting(): void {
+    const didHarvest = harvestTask(this.creep);
+    if (!didHarvest) {
+      logger.debug(`Creep harvest unsuccessful: ${this.creep.name}`);
+    }
+  }
+
+  private _tryDepositing(): void {
+    const targets = getTargetStructures(this.creep.room);
+
+    const didDeposit = depositTask(this.creep, targets);
+    if (!didDeposit) {
+      logger.debug(`Creep deposit unsuccessful: ${this.creep.name}`);
     }
   }
 }

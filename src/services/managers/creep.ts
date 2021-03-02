@@ -1,9 +1,9 @@
-import { defaultCreepMemory } from "config/creep";
-import { CreepRole } from "roles/abstract";
+import { BaseRole } from "roles/abstract";
 import { UpgraderRole } from "roles/upgrader";
 import { logger } from "tools/logger";
+import { executeAction } from "tools/utils";
 
-import { BuilderMemory, BuilderRole } from "../../roles/builder";
+import { BuilderRole } from "../../roles/builder";
 import { HarvesterRole } from "../../roles/harvester";
 import { Manager } from "./abstract";
 
@@ -55,7 +55,6 @@ export class CreepManager extends Manager {
         logger.warn("Removing creep from game...");
 
         creep.suicide();
-        continue;
       }
 
       if (collection[creepRole] === undefined) {
@@ -74,11 +73,11 @@ export class CreepManager extends Manager {
   public loop(): void {
     const creepsInRoom = this.currentRoom.find(FIND_MY_CREEPS);
 
-    this._trySpawning(creepsInRoom);
-    this._tryAssigningRole(creepsInRoom);
+    this._trySpawningCreeps(creepsInRoom);
+    this._tryAssigningRoles(creepsInRoom);
   }
 
-  private _trySpawning(creeps: Creep[]): void {
+  private _trySpawningCreeps(creeps: Creep[]): void {
     if (this.spawn === undefined) {
       return logger.info(`[No spawn] Skipping spawning: ${this.currentRoom.name}`);
     }
@@ -91,7 +90,7 @@ export class CreepManager extends Manager {
         opacity: 0.8
       });
 
-      return logger.info(`[Spawning] Skipping spawning: ${this.currentRoom.name}`);
+      return logger.info(`[Spawning] Is already spawning: ${this.currentRoom.name}`);
     }
 
     const harvesters = _.filter(creeps, creep => creep.memory.role === "Harvester");
@@ -101,50 +100,41 @@ export class CreepManager extends Manager {
     if (harvesters.length < 2) {
       const creepName = `Harvester${Game.time}`;
 
-      const creepMemory: BuilderMemory = {
-        ...defaultCreepMemory,
-        homeRoom: this.spawn.name,
-        role: "Harvester",
-        state: "idle"
-      };
-
-      const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, {
-        memory: creepMemory
-      });
-
+      const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName);
       if (didSpawnCreep === OK) {
         logger.info("Spawned new harvester: " + creepName);
       }
     }
   }
 
-  private _tryAssigningRole(creeps: Creep[]): void {
+  private _tryAssigningRoles(creeps: Creep[]): void {
     creeps.forEach((creep: Creep) => {
-      const creepRole: Role = creep.memory.role ?? "Unassigned";
-
-      type RoleFunction = () => CreepRole;
-      type RoleAssignment = RoleFunction | undefined;
-
-      type RoleMap = {
-        [key in Role]: RoleAssignment;
-      };
-
-      const roleMap: RoleMap = {
-        Harvester: () => new HarvesterRole(creep, this.currentRoom),
-        Builder: () => new BuilderRole(creep, this.currentRoom),
-        Upgrader: () => new UpgraderRole(creep, this.currentRoom),
-
-        Unassigned: undefined
-      };
-
-      const targetAssignment = roleMap[creepRole];
-      const assignmentExists = targetAssignment !== undefined;
-
-      if (targetAssignment && assignmentExists) {
-        targetAssignment().run();
-      } else {
-        logger.info(`Creep is missing role: ${creep.name}`);
-      }
+      this._tryAssigningRole(creep);
     });
+  }
+
+  private _tryAssigningRole(creep: Creep): void {
+    const creepRole: Role = creep.memory.role ?? "Unassigned";
+
+    type RoleFunction = () => BaseRole;
+    type RoleAssignment = RoleFunction | undefined;
+
+    type RoleMap = {
+      [key in Role]: RoleAssignment;
+    };
+
+    const roleMap: RoleMap = {
+      Harvester: () => new HarvesterRole(creep, this.currentRoom),
+      Builder: () => new BuilderRole(creep, this.currentRoom),
+      Upgrader: () => new UpgraderRole(creep, this.currentRoom),
+
+      // Do nothing for unassigned roles
+      Unassigned: undefined
+    };
+
+    const didExecute = executeAction(roleMap[creepRole]);
+    if (!didExecute) {
+      logger.info(`Creep is missing role: ${creep.name}`);
+    }
   }
 }

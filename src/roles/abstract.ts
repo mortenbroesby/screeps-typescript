@@ -1,17 +1,26 @@
-export interface IInternals {
+export interface BaseRoleInternals {
   role: Role;
   creep: Creep;
   homeRoom: Room;
 }
 
-export abstract class CreepRole {
-  private _internals!: IInternals;
+export interface BaseRoleMemory extends CreepMemory {
+  homeRoom: string;
+  role: Role;
+}
+
+export abstract class BaseRole<TMemory extends BaseRoleMemory> {
+  private _internals: BaseRoleInternals;
+
+  public constructor(internals: BaseRoleInternals) {
+    this._internals = internals;
+  }
 
   public get creep(): Creep {
     return this._internals.creep;
   }
 
-  public get currentRoom(): Room {
+  public get homeRoom(): Room {
     return this._internals.homeRoom;
   }
 
@@ -19,8 +28,11 @@ export abstract class CreepRole {
     return this._internals.role;
   }
 
-  public constructor(internals: IInternals) {
-    this._internals = internals;
+  public get memory(): TMemory {
+    return this.creep.memory as TMemory;
+  }
+  public set memory(memory: TMemory) {
+    this.creep.memory = memory;
   }
 
   public run(): void {
