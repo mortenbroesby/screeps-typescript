@@ -8,15 +8,21 @@ import typescript from 'rollup-plugin-typescript2';
 import screeps from 'rollup-plugin-screeps';
 
 const isProduction = process.env.NODE_ENV === 'production'
-const cfg = isProduction ? 'main' : 'sim';
+const defaultConfigTarget = isProduction ? 'main' : 'sim';
 
-const dest = process.env.DEST;
+let configTarget = defaultConfigTarget;
 
-if (!dest) {
-  console.log("No destination specified - code will be compiled but not uploaded");
-} else if ((cfg = require("./screeps.json")[dest]) == null) {
+const destination = process.env.DEST;
+if (!destination) {
+  console.log("No destination specified, using destination: ", configTarget);
+} else if ((require("./screeps.json")[destination]) == null) {
   throw new Error("Invalid upload destination");
+} else {
+  configTarget = destination;
+  console.log("Using destination: ", configTarget);
 }
+
+const configFile = require("./screeps")[configTarget]
 
 export default {
   input: "src/main.ts",
@@ -48,10 +54,11 @@ export default {
       }
     }),
 
-    typescript({tsconfig: "./tsconfig.json"}),
+    typescript({ tsconfig: "./tsconfig.json" }),
 
     screeps({
-      config: require("./screeps")[cfg],
+      config: configFile,
+
       // if `NODE_ENV` is local, perform a dry run
       dryRun: process.env.NODE_ENV === 'local'
     })
