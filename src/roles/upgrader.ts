@@ -23,15 +23,14 @@ export class UpgraderRole extends CreepRole {
       return logger.error("No room controller!");
     }
 
-    if (this.creep.store[RESOURCE_ENERGY] == 0) {
-      var sources = this.creep.room.find(FIND_SOURCES);
-      if (this.creep.harvest(sources[0]) == ERR_NOT_IN_RANGE) {
-        this.creep.moveTo(sources[0], { visualizePathStyle: { stroke: '#ffaa00' } });
+    if (this.creep.store[RESOURCE_ENERGY] === 0) {
+      const sources = this.creep.room.find(FIND_SOURCES);
+      if (this.creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
+        this.creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
       }
-    }
-    else {
-      if (this.creep.upgradeController(roomController) == ERR_NOT_IN_RANGE) {
-        this.creep.moveTo(roomController, { visualizePathStyle: { stroke: '#ffffff' } });
+    } else {
+      if (this.creep.upgradeController(roomController) === ERR_NOT_IN_RANGE) {
+        this.creep.moveTo(roomController, { visualizePathStyle: { stroke: "#ffffff" } });
       }
     }
   }

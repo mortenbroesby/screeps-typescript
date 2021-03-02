@@ -1,52 +1,55 @@
 import Config from "config";
+
 import { LogLevel } from "enums";
-
+import { Service } from "services/abstract";
+import { RoomService } from "services/room";
 import { logger } from "tools/logger";
-import { Manager } from "../manager/abstract";
 
-import { CreepManager } from "../manager/creep";
-import { DebugManager } from "../manager/debug";
-import { MemoryManager } from "../manager/memory";
-import { RoomManager } from "../manager/room";
+import { Manager } from "../managers/abstract";
+import { CreepManager } from "../managers/creep";
+import { DebugManager } from "../managers/debug";
+import { MemoryManager } from "../managers/memory";
 
 export class Brain {
+  private services: Service[] = [];
   private managers: Manager[] = [];
 
-  get version(): string {
+  public get version(): string {
     return "1.0.5";
   }
 
-  constructor() {
+  public constructor() {
     this.initialise();
   }
 
   private initialise(): void {
     const logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
 
-    logger.setLogLevel(logLevel)
+    logger.setLogLevel(logLevel);
 
     Memory.settings = {
       ...Config.settings,
       version: this.version
     };
 
-    console.log(`Brain version: ${this.version}`)
+    console.log(`Brain version: ${this.version}`);
 
-    this.managers = [
-      new DebugManager(),
-      new CreepManager(),
-      new MemoryManager(),
-      new RoomManager(),
-    ];
+    // Initialise all services
+    this.services = [new RoomService()];
+
+    // Initialise all managers
+    this.managers = [new DebugManager(), new CreepManager(), new MemoryManager()];
   }
 
   public loop(): void {
     // logger.debug("Brain is looping.");
 
-    this.managers.forEach((manager) => {
-      // logger.debug(`Looping manager: ${manager.settings.name}`);
+    this.services.forEach((service: Service) => {
+      service.loop();
+    });
 
+    this.managers.forEach((manager: Manager) => {
       manager.loop();
-    })
+    });
   }
 }

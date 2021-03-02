@@ -1,6 +1,5 @@
 // example declaration file - remove these and add your own custom typings
 
-
 interface CreepMemory {
   role: number;
 
