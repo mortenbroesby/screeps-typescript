@@ -1,4 +1,5 @@
 import { logger } from "tools/logger";
+
 import { CreepRole } from "./abstract";
 
 const targetStructures = (room: Room) => {

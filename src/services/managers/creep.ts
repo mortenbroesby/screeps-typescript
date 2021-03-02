@@ -3,7 +3,7 @@ import { CreepRole } from "roles/abstract";
 import { UpgraderRole } from "roles/upgrader";
 import { logger } from "tools/logger";
 
-import { BuilderRole } from "../../roles/builder";
+import { BuilderMemory, BuilderRole } from "../../roles/builder";
 import { HarvesterRole } from "../../roles/harvester";
 import { Manager } from "./abstract";
 
@@ -101,10 +101,11 @@ export class CreepManager extends Manager {
     if (harvesters.length < 2) {
       const creepName = `Harvester${Game.time}`;
 
-      const creepMemory: CreepMemory = {
+      const creepMemory: BuilderMemory = {
         ...defaultCreepMemory,
+        homeRoom: this.spawn.name,
         role: "Harvester",
-        homeRoom: this.spawn.name
+        state: "idle"
       };
 
       const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, {

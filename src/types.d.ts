@@ -6,9 +6,8 @@ type Role = "Unassigned" | "Builder" | "Harvester" | "Upgrader";
 
 interface CreepMemory {
   version: string;
-  role: Role;
   homeRoom: string;
-  building?: boolean;
+  role: Role;
 }
 
 interface MemorySettings {

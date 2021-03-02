@@ -1,4 +1,5 @@
 import { logger } from "tools/logger";
+
 import { CreepRole } from "./abstract";
 
 export class UpgraderRole extends CreepRole {
