@@ -1,4 +1,3 @@
-import { Role } from "enums";
 import { logger } from "tools/logger";
 import { CreepRole } from "./abstract";
 
@@ -23,11 +22,10 @@ const targetStructures = (room: Room) => {
 };
 
 export class HarvesterRole extends CreepRole {
-  public constructor(creep: Creep, room: Room) {
+  public constructor(creep: Creep, homeRoom: Room) {
     super({
-      name: HarvesterRole.name,
-      role: Role.Harvester,
-      room,
+      role: "Harvester",
+      homeRoom,
       creep
     });
   }

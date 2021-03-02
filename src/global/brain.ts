@@ -9,10 +9,6 @@ import { GlobalMemoryService } from "../services/global-memory";
 export class Brain {
   private _services: Service[] = [];
 
-  public get version(): string {
-    return "1.0.6";
-  }
-
   public constructor() {
     this._initialise();
   }
@@ -23,7 +19,7 @@ export class Brain {
     logger.setLogLevel(logLevel);
 
     // Initialise all services
-    this._services = [new DebugService(), new RoomService(), new GlobalMemoryService(this.version)];
+    this._services = [new DebugService(), new RoomService(), new GlobalMemoryService()];
   }
 
   public loop(): void {

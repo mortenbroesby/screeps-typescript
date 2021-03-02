@@ -11,45 +11,45 @@ class Logger {
 
   private _log({
     message,
-    room,
+    data,
     logLevel,
     color = "#ffffff"
   }: {
     message: string;
-    room?: string;
+    data: string[];
     logLevel: LogLevel;
     color?: string;
   }) {
     const hasProperLogLevel = logLevel <= this._logLevel;
     if (!hasProperLogLevel) return;
 
-    if (room !== undefined) {
-      console.log(
-        `<span style='color:${color}'><a href='#!/room/${Game.shard.name}/${room}'>${room}</a> ${message}</span>`
-      );
-    } else {
-      console.log("<span style='color:" + color + "'>" + message + "</span>");
+    let combinedMessage = message;
+
+    if (data.length > 0) {
+      combinedMessage += JSON.stringify({ ...data });
     }
+
+    console.log(`<span style='color:${color}'>${combinedMessage}</span>`);
   }
 
-  public debug(message: string, room?: string) {
-    this._log({ message, room, logLevel: LogLevel.DEBUG, color: "#e3e3e3" });
+  public debug(message: string, ...data: string[]) {
+    this._log({ message, data, logLevel: LogLevel.DEBUG, color: "#e3e3e3" });
   }
 
-  public info(message: string, room?: string) {
-    this._log({ message, room, logLevel: LogLevel.INFO });
+  public info(message: string, ...data: string[]) {
+    this._log({ message, data, logLevel: LogLevel.INFO });
   }
 
-  public warning(message: string, room?: string) {
-    this._log({ message, room, logLevel: LogLevel.WARN, color: "#f4c542" });
+  public warn(message: string, ...data: string[]) {
+    this._log({ message, data, logLevel: LogLevel.WARN, color: "#f4c542" });
   }
 
-  public error(message: string, room?: string) {
-    this._log({ message, room, logLevel: LogLevel.ERROR, color: "#e50000" });
+  public error(message: string, ...data: string[]) {
+    this._log({ message, data, logLevel: LogLevel.ERROR, color: "#e50000" });
   }
 
-  public alert(message: string, room?: string) {
-    this._log({ message, room, logLevel: LogLevel.ALERT, color: "#ff00d0" });
+  public alert(message: string, ...data: string[]) {
+    this._log({ message, data, logLevel: LogLevel.ALERT, color: "#ff00d0" });
   }
 }
 

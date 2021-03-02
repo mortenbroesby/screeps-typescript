@@ -1,13 +1,11 @@
-import { Role } from "enums";
 import { logger } from "tools/logger";
 import { CreepRole } from "./abstract";
 
 export class UpgraderRole extends CreepRole {
-  public constructor(creep: Creep, room: Room) {
+  public constructor(creep: Creep, homeRoom: Room) {
     super({
-      name: UpgraderRole.name,
-      role: Role.Upgrader,
-      room,
+      role: "Upgrader",
+      homeRoom,
       creep
     });
   }
