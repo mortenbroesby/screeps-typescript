@@ -4,9 +4,7 @@ import { Manager } from "./abstract";
 
 export class MemoryManager extends Manager {
   public constructor() {
-    super({
-      name: MemoryManager.name
-    });
+    super({ name: MemoryManager.name });
   }
 
   /**

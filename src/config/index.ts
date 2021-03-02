@@ -1,9 +1,8 @@
-
-import { logLevel, LogConfig} from "./logLevel";
+import { logLevel, LogConfig } from "./logLevel";
 import { settings } from "./settings";
 
-export * from './logLevel';
-export * from './settings';
+export * from "./logLevel";
+export * from "./settings";
 
 interface MainConfig {
   logLevel: LogConfig;
@@ -13,6 +12,6 @@ interface MainConfig {
 const Config: MainConfig = {
   logLevel,
   settings
-}
+};
 
 export default Config;

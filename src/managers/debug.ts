@@ -6,9 +6,7 @@ import { Manager } from "./abstract";
 
 export class DebugManager extends Manager {
   public constructor() {
-    super({
-      name: DebugManager.name
-    });
+    super({ name: DebugManager.name });
 
     this._logInitialDebugMessage();
   }

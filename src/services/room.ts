@@ -2,9 +2,7 @@ import { Service } from "./abstract";
 
 export class RoomService extends Service {
   public constructor() {
-    super({
-      name: RoomService.name
-    });
+    super({ name: RoomService.name });
   }
 
   /**

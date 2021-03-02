@@ -14,9 +14,7 @@ export class CreepManager extends Manager {
   private _creepCollection: CreepCollection = {};
 
   public constructor() {
-    super({
-      name: CreepManager.name
-    });
+    super({ name: CreepManager.name });
 
     this._creepCollection = this._createCollection();
 
@@ -63,8 +61,12 @@ export class CreepManager extends Manager {
       const newName = `Harvester${Game.time}`;
 
       const didSpawnCreep = Game.spawns.Spawn1.spawnCreep([WORK, CARRY, MOVE], newName, {
-        memory: { role: Role.Harvester }
+        memory: {
+          role: Role.Harvester,
+          homeRoom: Game.spawns.Spawn1.name
+        }
       });
+
       if (didSpawnCreep === OK) {
         logger.info("Spawned new harvester: " + newName);
       }

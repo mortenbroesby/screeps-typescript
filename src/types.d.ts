@@ -2,7 +2,7 @@
 
 interface CreepMemory {
   role: number;
-
+  homeRoom: string;
   building?: boolean;
 }
 
