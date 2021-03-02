@@ -21,17 +21,17 @@ export class DebugService extends Service {
    * Internal functions.
    */
   private _logInitialDebugMessage(): void {
-    console.log("----------------------------");
+    logger.global("----------------------------");
 
-    console.log("Is this production?", PRODUCTION ? "Yes." : "No.");
+    logger.global("Is this production?", PRODUCTION ? "Yes." : "No.");
 
     const currentDate = dayjs().format("MM.DD.YYYY");
     const currentTime = dayjs().format("HH:mm:ss");
 
-    console.log(`Date: ${currentDate}`);
-    console.log(`Time: ${currentTime}`);
+    logger.global(`Date: ${currentDate}`);
+    logger.global(`Time: ${currentTime}`);
 
-    console.log("----------------------------");
+    logger.global("----------------------------");
   }
 
   private _logGameInfo({ shouldLog }: { shouldLog: boolean }): void {

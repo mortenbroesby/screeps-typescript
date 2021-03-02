@@ -51,8 +51,8 @@ export class CreepManager extends Manager {
       const creepRole: Role = creep.memory.role ?? "Unassigned";
 
       if (creepRole === "Unassigned") {
-        console.log(`Creep with unknown role: ${creep.name} Pos: ${creep.pos.roomName}`);
-        console.log("Removing creep from game...");
+        logger.warn(`Creep with unknown role: ${creep.name} Pos: ${creep.pos.roomName}`);
+        logger.warn("Removing creep from game...");
 
         creep.suicide();
         continue;
