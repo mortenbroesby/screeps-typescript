@@ -1,4 +1,4 @@
-import { LogLevel } from "enums/loglevel"
+import { LogLevel } from "enums/loglevel";
 
 export interface LogConfig {
   default: LogLevel;
@@ -6,4 +6,4 @@ export interface LogConfig {
 
 export const logLevel: LogConfig = {
   default: LogLevel.INFO
-}
+};

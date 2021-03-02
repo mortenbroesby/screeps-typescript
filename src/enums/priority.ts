@@ -1,4 +1,4 @@
-export enum ManagerPriority {
+export enum Priority {
   Critical = 1,
   Standard = 2,
   Low = 3,

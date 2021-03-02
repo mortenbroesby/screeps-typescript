@@ -42,6 +42,7 @@ module.exports = {
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "@typescript-eslint/no-unused-expressions": "error",
+    "@typescript-eslint/no-unsafe-assignment": "off",
     "@typescript-eslint/no-use-before-define": ["error", { functions: false }],
     "@typescript-eslint/prefer-for-of": "error",
     "@typescript-eslint/space-within-parens": ["off", "never"],
@@ -76,13 +77,23 @@ module.exports = {
     "no-throw-literal": "error",
     "no-trailing-spaces": "off",
     "no-undef-init": "error",
-    "no-underscore-dangle": "warn",
+    "no-underscore-dangle": "off",
     "no-var": "error",
     "object-shorthand": "error",
     "one-var": ["error", "never"],
     "quote-props": "off",
     radix: "error",
-    "sort-imports": "warn",
+    "sort-imports": "off",
     "spaced-comment": "error",
+
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "memberLike",
+        "modifiers": ["private"],
+        "format": ["camelCase"],
+        "leadingUnderscore": "require"
+      }
+    ]
   }
 };

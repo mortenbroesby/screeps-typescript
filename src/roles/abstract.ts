@@ -1,5 +1,3 @@
-
-
 import { Role } from "../enums";
 
 export interface RoleSettings {
@@ -8,28 +6,34 @@ export interface RoleSettings {
 }
 
 export abstract class CreepRole {
-  private _name: string = "AbstractRole";
+  private _name = "AbstractRole";
   private _role: Role = Role.Unassigned;
   private _creep: Creep;
+  private _room: Room;
 
   public get creep(): Creep {
     return this._creep;
+  }
+
+  public get room(): Room {
+    return this._room;
   }
 
   public get settings(): RoleSettings {
     return {
       name: this._name,
       role: this._role
-    }
+    };
   }
 
-  constructor({ name, role, creep }: { name: string; role: Role; creep: Creep }) {
+  public constructor({ name, role, creep, room }: { name: string; role: Role; creep: Creep; room: Room }) {
     this._name = name;
     this._role = role;
     this._creep = creep;
+    this._room = room;
   }
 
   public run(): void {
     throw new Error("role should override run()");
-  };
+  }
 }
