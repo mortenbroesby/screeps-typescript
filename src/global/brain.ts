@@ -11,18 +11,18 @@ import { DebugManager } from "../managers/debug";
 import { MemoryManager } from "../managers/memory";
 
 export class Brain {
-  private services: Service[] = [];
-  private managers: Manager[] = [];
+  private _services: Service[] = [];
+  private _managers: Manager[] = [];
 
   public get version(): string {
     return "1.0.5";
   }
 
   public constructor() {
-    this.initialise();
+    this._initialise();
   }
 
-  private initialise(): void {
+  private _initialise(): void {
     const logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
 
     logger.setLogLevel(logLevel);
@@ -35,20 +35,20 @@ export class Brain {
     console.log(`Brain version: ${this.version}`);
 
     // Initialise all services
-    this.services = [new RoomService()];
+    this._services = [new RoomService()];
 
     // Initialise all managers
-    this.managers = [new DebugManager(), new CreepManager(), new MemoryManager()];
+    this._managers = [new DebugManager(), new CreepManager(), new MemoryManager()];
   }
 
   public loop(): void {
     // logger.debug("Brain is looping.");
 
-    this.services.forEach((service: Service) => {
+    this._services.forEach((service: Service) => {
       service.loop();
     });
 
-    this.managers.forEach((manager: Manager) => {
+    this._managers.forEach((manager: Manager) => {
       manager.loop();
     });
   }

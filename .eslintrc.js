@@ -84,5 +84,15 @@ module.exports = {
     radix: "error",
     "sort-imports": "off",
     "spaced-comment": "error",
+
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "memberLike",
+        "modifiers": ["private"],
+        "format": ["camelCase"],
+        "leadingUnderscore": "require"
+      }
+    ]
   }
 };

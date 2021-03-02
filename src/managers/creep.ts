@@ -11,23 +11,23 @@ interface CreepCollection {
 }
 
 export class CreepManager extends Manager {
-  private creepCollection: CreepCollection = {};
+  private _creepCollection: CreepCollection = {};
 
   public constructor() {
     super({
       name: CreepManager.name
     });
 
-    this.creepCollection = this.createCollection();
+    this._creepCollection = this._createCollection();
 
     // console.log(JSON.stringify(this.creepCollection))
   }
 
   public collection(): CreepCollection {
-    return this.creepCollection;
+    return this._creepCollection;
   }
 
-  private createCollection(): CreepCollection {
+  private _createCollection(): CreepCollection {
     const collection: CreepCollection = {};
 
     for (const name in Game.creeps) {

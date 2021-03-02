@@ -11,6 +11,6 @@ export class RoomService extends Service {
    * Game loop.
    */
   public loop(): void {
-    // logger.debug("RoomManager is looping");
+    // logger.debug("RoomService is looping");
   }
 }

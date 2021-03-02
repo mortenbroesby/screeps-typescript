@@ -10,20 +10,20 @@ export class DebugManager extends Manager {
       name: DebugManager.name
     });
 
-    this.logInitialDebugMessage();
+    this._logInitialDebugMessage();
   }
 
   /**
    * Game loop.
    */
   public loop(): void {
-    this.logGameInfo({ shouldLog: false });
+    this._logGameInfo({ shouldLog: false });
   }
 
   /**
    * Internal functions.
    */
-  private logInitialDebugMessage(): void {
+  private _logInitialDebugMessage(): void {
     console.log("----------------------------");
 
     console.log("Is this production?", PRODUCTION ? "Yes." : "No.");
@@ -37,7 +37,7 @@ export class DebugManager extends Manager {
     console.log("----------------------------");
   }
 
-  private logGameInfo({ shouldLog }: { shouldLog: boolean }): void {
+  private _logGameInfo({ shouldLog }: { shouldLog: boolean }): void {
     if (!shouldLog) return;
 
     logger.debug(`Current game tick is ${Game.time}`);
