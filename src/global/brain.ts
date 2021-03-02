@@ -1,5 +1,3 @@
-import Config from "config";
-
 import { LogLevel } from "enums";
 import { Service } from "services/abstract";
 import { RoomService } from "services/room";
@@ -12,7 +10,7 @@ export class Brain {
   private _services: Service[] = [];
 
   public get version(): string {
-    return "1.0.5";
+    return "1.0.6";
   }
 
   public constructor() {
@@ -24,15 +22,8 @@ export class Brain {
 
     logger.setLogLevel(logLevel);
 
-    Memory.settings = {
-      ...Config.settings,
-      version: this.version
-    };
-
-    console.log(`Brain version: ${this.version}`);
-
     // Initialise all services
-    this._services = [new DebugService(), new RoomService(), new GlobalMemoryService()];
+    this._services = [new DebugService(), new RoomService(), new GlobalMemoryService(this.version)];
   }
 
   public loop(): void {

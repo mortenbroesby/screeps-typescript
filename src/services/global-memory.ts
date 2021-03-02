@@ -1,9 +1,18 @@
+import Config from "config";
+
 import { logger } from "tools/logger";
 import { Service } from "./abstract";
 
 export class GlobalMemoryService extends Service {
-  public constructor() {
+  public constructor(version: string) {
     super({ name: GlobalMemoryService.name });
+
+    Memory.settings = {
+      ...Config.settings,
+      version
+    };
+
+    console.log(`Brain version: ${version}`);
   }
 
   /**
