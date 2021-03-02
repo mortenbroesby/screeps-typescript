@@ -14,10 +14,6 @@ export class RoomService extends Service {
     super({ name: RoomService.name });
 
     Object.values(Game.rooms).forEach((room: Room) => {
-      if (this._roomManagers[room.name] === undefined) {
-        this._roomManagers[room.name] = [];
-      }
-
       this._roomManagers[room.name] = [new CreepManager(room)];
     });
   }

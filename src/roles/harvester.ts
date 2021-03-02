@@ -1,5 +1,26 @@
 import { Role } from "enums";
+import { logger } from "tools/logger";
 import { CreepRole } from "./abstract";
+
+const targetStructures = (room: Room) => {
+  const targets = room.find(FIND_STRUCTURES, {
+    filter: structure => {
+      type MatchedStructure = StructureExtension | StructureSpawn | StructureTower;
+
+      const structureMatches =
+        structure.structureType === STRUCTURE_EXTENSION ||
+        structure.structureType === STRUCTURE_SPAWN ||
+        structure.structureType === STRUCTURE_TOWER;
+
+      const freeCapacity = (structure as MatchedStructure).store?.getFreeCapacity(RESOURCE_ENERGY) ?? 0;
+      const hasCapacity = freeCapacity > 0;
+
+      return structureMatches && hasCapacity;
+    }
+  });
+
+  return targets;
+};
 
 export class HarvesterRole extends CreepRole {
   public constructor(creep: Creep, room: Room) {
@@ -21,26 +42,23 @@ export class HarvesterRole extends CreepRole {
     // console.log("Creep name: ", this.creep.name);
 
     if (this.creep.store.getFreeCapacity() > 0) {
-      const sources = this.creep.room.find(FIND_SOURCES);
+      const source = this.creep.pos.findClosestByRange(FIND_SOURCES_ACTIVE);
+      if (!source) {
+        return logger.debug(`creep ${this.creep.name} has no source`);
+      }
 
-      if (this.creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
-        this.creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
+      const attemptHarvesting = this.creep.harvest(source);
+      if (attemptHarvesting === ERR_NOT_IN_RANGE) {
+        this.creep.moveTo(source, { visualizePathStyle: { stroke: "#ffaa00" } });
       }
     } else {
-      const targets = this.creep.room.find(FIND_STRUCTURES, {
-        filter: structure => {
-          return (
-            (structure.structureType === STRUCTURE_EXTENSION ||
-              structure.structureType === STRUCTURE_SPAWN ||
-              structure.structureType === STRUCTURE_TOWER) &&
-            structure.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-          );
-        }
-      });
+      const targets = targetStructures(this.creep.room);
 
       if (targets.length > 0) {
-        if (this.creep.transfer(targets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
-          this.creep.moveTo(targets[0], { visualizePathStyle: { stroke: "#ffffff" } });
+        const sortedTargets = _.sortBy(targets, target => this.creep.pos.getRangeTo(target));
+
+        if (this.creep.transfer(sortedTargets[0], RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+          this.creep.moveTo(sortedTargets[0], { visualizePathStyle: { stroke: "#ffffff" } });
         }
       }
     }
