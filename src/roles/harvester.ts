@@ -2,10 +2,11 @@ import { Role } from "enums";
 import { CreepRole } from "./abstract";
 
 export class HarvesterRole extends CreepRole {
-  public constructor(creep: Creep) {
+  public constructor(creep: Creep, room: Room) {
     super({
       name: HarvesterRole.name,
       role: Role.Harvester,
+      room,
       creep
     });
   }
@@ -21,6 +22,7 @@ export class HarvesterRole extends CreepRole {
 
     if (this.creep.store.getFreeCapacity() > 0) {
       const sources = this.creep.room.find(FIND_SOURCES);
+
       if (this.creep.harvest(sources[0]) === ERR_NOT_IN_RANGE) {
         this.creep.moveTo(sources[0], { visualizePathStyle: { stroke: "#ffaa00" } });
       }

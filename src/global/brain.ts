@@ -5,14 +5,11 @@ import { Service } from "services/abstract";
 import { RoomService } from "services/room";
 import { logger } from "tools/logger";
 
-import { Manager } from "../managers/abstract";
-import { CreepManager } from "../managers/creep";
-import { DebugManager } from "../managers/debug";
-import { MemoryManager } from "../managers/memory";
+import { DebugService } from "../services/debug";
+import { GlobalMemoryService } from "../services/global-memory";
 
 export class Brain {
   private _services: Service[] = [];
-  private _managers: Manager[] = [];
 
   public get version(): string {
     return "1.0.5";
@@ -35,10 +32,7 @@ export class Brain {
     console.log(`Brain version: ${this.version}`);
 
     // Initialise all services
-    this._services = [new RoomService()];
-
-    // Initialise all managers
-    this._managers = [new DebugManager(), new CreepManager(), new MemoryManager()];
+    this._services = [new DebugService(), new RoomService(), new GlobalMemoryService()];
   }
 
   public loop(): void {
@@ -46,10 +40,6 @@ export class Brain {
 
     this._services.forEach((service: Service) => {
       service.loop();
-    });
-
-    this._managers.forEach((manager: Manager) => {
-      manager.loop();
     });
   }
 }

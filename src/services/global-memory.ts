@@ -1,10 +1,9 @@
 import { logger } from "tools/logger";
+import { Service } from "./abstract";
 
-import { Manager } from "./abstract";
-
-export class MemoryManager extends Manager {
+export class GlobalMemoryService extends Service {
   public constructor() {
-    super({ name: MemoryManager.name });
+    super({ name: GlobalMemoryService.name });
   }
 
   /**

@@ -1,12 +1,11 @@
 import dayjs from "dayjs";
 
 import { logger } from "tools/logger";
+import { Service } from "./abstract";
 
-import { Manager } from "./abstract";
-
-export class DebugManager extends Manager {
+export class DebugService extends Service {
   public constructor() {
-    super({ name: DebugManager.name });
+    super({ name: DebugService.name });
 
     this._logInitialDebugMessage();
   }
