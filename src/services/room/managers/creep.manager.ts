@@ -98,20 +98,21 @@ export class CreepManager extends Manager {
     }
 
     const minimumCreepsOfType = Memory.settings?.minimumCreepsOfType ?? defaultSettings().minimumCreepsOfType;
+    const sortedEntries = Object.entries(minimumCreepsOfType).sort(([, a], [, b]) => a.priority - b.priority);
 
-    for (const [role, minimumOfType] of Object.entries(minimumCreepsOfType)) {
-      if (role !== "harvester") return;
-
-      // console.log(`${role}: ${minimumOfType}`);
+    sortedEntries.forEach(entry => {
+      const [role, creepCountMinimum] = entry;
+      const { count } = creepCountMinimum;
 
       const creepsOfType = _.filter(creeps, creep => creep.memory.role === role);
 
+      // console.log(`${role}: target count: ${count} - priority: ${priority}`);
       // logger.debug(`Creeps with role ${role} - count: ${creepsOfType.length}`);
 
-      if (creepsOfType.length < minimumOfType) {
+      if (creepsOfType.length < count) {
         this._trySpawningCreep(role as CreepRole);
       }
-    }
+    });
   }
 
   private _trySpawningCreep(role: CreepRole): void {

@@ -11,12 +11,19 @@ interface CreepMemory {
   state: string;
 }
 
+interface MinimumCreepCount {
+  count: number;
+  priority: number;
+}
+
+type MinimumCreepCountMap = {
+  [key in CreepRole]: MinimumCreepCount;
+};
+
 interface MemorySettings {
   version: string;
 
-  minimumCreepsOfType: {
-    [key in CreepRole]: number;
-  };
+  minimumCreepsOfType: MinimumCreepCountMap;
 }
 
 interface Memory {
