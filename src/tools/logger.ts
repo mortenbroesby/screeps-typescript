@@ -25,7 +25,7 @@ class Logger {
     const hasProperLogLevel = logLevel <= this._logLevel;
     if (!hasProperLogLevel) return;
 
-    let displayedMessage = LogLevel[logLevel].toLowerCase();
+    let displayedMessage = `[${LogLevel[logLevel].toLowerCase()}]`;
 
     displayedMessage += ` ${message}`;
     displayedMessage += convertToString(args);

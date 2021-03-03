@@ -26,7 +26,7 @@ export class MemoryService extends Service {
       const creepMemory: CreepMemory = Memory.creeps[name];
       const memoryVersion = creepMemory.version ?? "-1";
 
-      if (memoryVersion !== defaultCreepMemory.version) {
+      if (memoryVersion !== defaultCreepMemory().version) {
         logger.warn(`Creep has outdated memory: ${name}`);
       }
     }

@@ -19,7 +19,7 @@ export class BuilderRole extends BaseRole<BuilderMemory> {
     });
 
     this.memory = {
-      ...defaultCreepMemory,
+      ...defaultCreepMemory(),
       homeRoom: homeRoom.name,
       role: "builder",
       state: "harvest"

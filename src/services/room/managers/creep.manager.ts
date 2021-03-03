@@ -7,6 +7,7 @@ import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
 import { UpgraderRole } from "roles/upgrader.role";
 import { HarvesterRole } from "roles/harvester.role";
 import { BuilderRole } from "roles/builder.role";
+import { defaultCreepMemory } from "config/creep";
 
 interface CreepCollection {
   [role: string]: Creep[];
@@ -93,20 +94,24 @@ export class CreepManager extends Manager {
 
       this.spawn.room.visual.text(`🛠️${role}`, position.x + 1, position.y, style);
 
-      return logger.debug(`[Abort Spawn] Is already spawning: ${this.currentRoom.name}`);
+      return logger.debug(`[Abort Spawn] Is already spawning: ${this.spawn.spawning.name}`);
     }
 
     const minimumCreepsOfType = Memory.settings?.minimumCreepsOfType ?? defaultSettings().minimumCreepsOfType;
 
-    Object.keys(minimumCreepsOfType).forEach((role, minimumOfType) => {
+    for (const [role, minimumOfType] of Object.entries(minimumCreepsOfType)) {
+      if (role !== "harvester") return;
+
+      // console.log(`${role}: ${minimumOfType}`);
+
       const creepsOfType = _.filter(creeps, creep => creep.memory.role === role);
 
-      logger.debug(`Creeps with role ${role} - count: ${creepsOfType.length}`);
+      // logger.debug(`Creeps with role ${role} - count: ${creepsOfType.length}`);
 
       if (creepsOfType.length < minimumOfType) {
         this._trySpawningCreep(role as CreepRole);
       }
-    });
+    }
   }
 
   private _trySpawningCreep(role: CreepRole): void {
@@ -116,7 +121,10 @@ export class CreepManager extends Manager {
 
     const creepName = `${role}_${Game.time}`;
 
-    const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName);
+    const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, {
+      memory: defaultCreepMemory(role)
+    });
+
     if (didSpawnCreep === OK) {
       logger.debug(`Spawned new ${role} with name ${creepName}`);
     }

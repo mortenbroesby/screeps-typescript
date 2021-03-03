@@ -20,7 +20,7 @@ export class UpgraderRole extends BaseRole<UpgraderMemory> {
     });
 
     this.memory = {
-      ...defaultCreepMemory,
+      ...defaultCreepMemory(),
       homeRoom: homeRoom.name,
       role: "upgrader",
       state: "harvest"
