@@ -18,12 +18,7 @@ export class RoomService extends Service {
     });
   }
 
-  /**
-   * Game loop.
-   */
   public loop(): void {
-    // logger.debug("RoomService is looping");
-
     Object.values(this._roomManagers).forEach((managers: Manager[]) => {
       managers.forEach((manager: Manager) => {
         manager.loop();

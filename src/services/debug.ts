@@ -10,16 +10,10 @@ export class DebugService extends Service {
     this._logInitialDebugMessage();
   }
 
-  /**
-   * Game loop.
-   */
   public loop(): void {
     this._logGameInfo({ shouldLog: false });
   }
 
-  /**
-   * Internal functions.
-   */
   private _logInitialDebugMessage(): void {
     logger.global("----------------------------");
 

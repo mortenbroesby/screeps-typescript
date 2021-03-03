@@ -22,3 +22,9 @@ interface MemorySettings {
 interface Memory {
   settings: MemorySettings;
 }
+
+declare namespace NodeJS {
+  interface Global {
+    Memory?: Memory;
+  }
+}

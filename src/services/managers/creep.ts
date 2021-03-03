@@ -68,9 +68,6 @@ export class CreepManager extends Manager {
     return collection;
   }
 
-  /**
-   * Game loop.
-   */
   public loop(): void {
     const creepsInRoom = this.currentRoom.find(FIND_MY_CREEPS);
 

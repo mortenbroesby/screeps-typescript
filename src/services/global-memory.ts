@@ -11,17 +11,17 @@ export class GlobalMemoryService extends Service {
     super({ name: GlobalMemoryService.name });
 
     logger.global(`Brain version: ${Constants.VERSION}`);
+  }
 
-    const settingsMemory: MemorySettings | undefined = Memory.settings;
-    const settingsVersion: string = settingsMemory?.version ?? "-1";
+  public loop(): void {
+    this._cleanupOutdatedCreepMemory();
+    this._cleanupStaleCreepMemory();
 
-    const shouldResetMemory = settingsVersion !== defaultSettings().version;
-    if (shouldResetMemory) {
-      logger.debug(`Re-setting memory settings: ${JSON.stringify(defaultSettings())}`);
-      Memory.settings = defaultSettings();
-    }
+    this._resetStaleMemory();
+  }
 
-    // Automatically delete memory of missing creeps
+  private _cleanupOutdatedCreepMemory(): void {
+    // Warn if creep has outdated memory
     for (const name in Memory.creeps) {
       const creepMemory: CreepMemory = Memory.creeps[name];
       const memoryVersion = creepMemory.version ?? "-1";
@@ -32,10 +32,7 @@ export class GlobalMemoryService extends Service {
     }
   }
 
-  /**
-   * Game loop.
-   */
-  public loop(): void {
+  private _cleanupStaleCreepMemory(): void {
     // Automatically delete memory of missing creeps
     for (const name in Memory.creeps) {
       if (!(name in Game.creeps)) {
@@ -43,6 +40,18 @@ export class GlobalMemoryService extends Service {
 
         logger.debug(`Clearing non-existing creep memory: ${name}`);
       }
+    }
+  }
+
+  private _resetStaleMemory(): void {
+    const settingsMemory: MemorySettings | undefined = Memory.settings;
+    const settingsVersion: string = settingsMemory?.version ?? "-1";
+
+    const shouldResetMemory = settingsVersion !== defaultSettings().version;
+    if (shouldResetMemory) {
+      logger.debug(`Re-setting memory settings: ${JSON.stringify(defaultSettings())}`);
+
+      Memory.settings = defaultSettings();
     }
   }
 }
