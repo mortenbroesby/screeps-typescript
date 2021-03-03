@@ -4,11 +4,11 @@ import Constants from "global/constants";
 
 import { defaultCreepMemory } from "config/creep";
 import { defaultSettings } from "config/settings";
-import { Service } from "./abstract";
+import { Service } from "./abstract.service";
 
-export class GlobalMemoryService extends Service {
+export class MemoryService extends Service {
   public constructor() {
-    super({ name: GlobalMemoryService.name });
+    super({ name: MemoryService.name });
 
     logger.global(`Brain version: ${Constants.VERSION}`);
   }

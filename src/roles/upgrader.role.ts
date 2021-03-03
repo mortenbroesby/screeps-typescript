@@ -2,8 +2,8 @@ import { defaultCreepMemory } from "config/creep";
 import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
 
-import { BaseRole, BaseRoleMemory } from "./abstract";
-import { harvestTask, upgradeTask } from "./shared";
+import { BaseRole, BaseRoleMemory } from "./abstract.role";
+import { harvestTask, upgradeTask } from "./shared/shared-tasks";
 
 type UpgraderState = "harvest" | "upgrade";
 

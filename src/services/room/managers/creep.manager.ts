@@ -1,12 +1,12 @@
 import { defaultSettings } from "config/settings";
-import { BaseRole, BaseRoleMemory } from "roles/abstract";
-import { UpgraderRole } from "roles/upgrader";
 import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
+import { Manager } from "./abstract.manager";
 
-import { BuilderRole } from "../../roles/builder";
-import { HarvesterRole } from "../../roles/harvester";
-import { Manager } from "./abstract";
+import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
+import { UpgraderRole } from "roles/upgrader.role";
+import { HarvesterRole } from "roles/harvester.role";
+import { BuilderRole } from "roles/builder.role";
 
 interface CreepCollection {
   [role: string]: Creep[];

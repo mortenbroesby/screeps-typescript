@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 
 import { logger } from "tools/logger";
-import { Service } from "./abstract";
+import { Service } from "./abstract.service";
 
 export class DebugService extends Service {
   public constructor() {

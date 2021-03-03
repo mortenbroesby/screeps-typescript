@@ -1,11 +1,9 @@
-import { LogLevel } from "enums";
-import { Service } from "services/abstract";
-import { RoomService } from "services/room";
-import { logger } from "tools/logger";
 import { setupInitialMemory, setupMemory, shutdownMemory } from "tools/memory";
 
-import { DebugService } from "../services/debug";
-import { GlobalMemoryService } from "../services/global-memory";
+import { Service } from "services/abstract.service";
+import { RoomService } from "services/room.service";
+import { DebugService } from "../services/debug.service";
+import { MemoryService } from "../services/memory.service";
 
 export class Brain {
   private _services: Service[] = [];
@@ -17,12 +15,7 @@ export class Brain {
   }
 
   private _initialise(): void {
-    const logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
-
-    logger.setLogLevel(logLevel);
-
-    // Initialise all services
-    this._services = [new DebugService(), new RoomService(), new GlobalMemoryService()];
+    this._services = [new DebugService(), new MemoryService(), new RoomService()];
   }
 
   public loop(): void {

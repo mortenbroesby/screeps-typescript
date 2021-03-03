@@ -1,7 +1,7 @@
-import { Service } from "./abstract";
+import { Service } from "./abstract.service";
 
-import { Manager } from "services/managers/abstract";
-import { CreepManager } from "services/managers/creep";
+import { Manager } from "services/room/managers/abstract.manager";
+import { CreepManager } from "services/room/managers/creep.manager";
 
 interface RoomCollection {
   [roomName: string]: Manager[];
