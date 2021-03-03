@@ -1,73 +1,60 @@
 import { LogLevel } from "../enums";
+import { convertToString } from "./utils";
 
 class Logger {
   private _logLevel: LogLevel = LogLevel.DEBUG;
 
-  public setLogLevel(targetLevel: LogLevel) {
-    this._logLevel = targetLevel;
-
-    console.log("Log-level: ", LogLevel[targetLevel]);
+  public get logLevel(): LogLevel {
+    return this._logLevel;
+  }
+  public set logLevel(level: LogLevel) {
+    this._logLevel = level;
   }
 
   private _log({
     message,
-    data,
+    args,
     logLevel,
     color = "#ffffff"
   }: {
     message: string;
-    data: unknown[];
+    args: unknown[];
     logLevel: LogLevel;
     color?: string;
   }) {
-    const logLevelString = LogLevel[logLevel].toLowerCase();
-
     const hasProperLogLevel = logLevel <= this._logLevel;
     if (!hasProperLogLevel) return;
 
-    let displayedMessage = `[${logLevelString}] ${message}`;
+    let displayedMessage = LogLevel[logLevel].toLowerCase();
 
-    if (data.length > 0) {
-      const argumentValues: string = data.reduce((accumulated: string, value) => {
-        if (typeof value === "string") {
-          return `${accumulated} ${value}`;
-        }
-
-        const serialised = JSON.stringify(value)
-          .replace(/:(\d+)([,}])/g, ':"$1"$2')
-          .replace(/:(true|false|null)/g, ':"$1"');
-
-        return `${accumulated} ${serialised}`;
-      }, "");
-
-      displayedMessage += argumentValues;
-    }
+    displayedMessage += ` ${message}`;
+    displayedMessage += convertToString(args);
 
     console.log(`<span style='color:${color}'>${displayedMessage}</span>`);
   }
 
-  public global(message: string, ...data: unknown[]) {
-    this._log({ message, data, logLevel: LogLevel.GLOBAL });
+  public global(message: string, ...args: unknown[]) {
+    this._log({ message, args, logLevel: LogLevel.GLOBAL });
   }
 
-  public debug(message: string, ...data: unknown[]) {
-    this._log({ message, data, logLevel: LogLevel.DEBUG, color: "#e3e3e3" });
+  public debug(message: string, ...args: unknown[]) {
+    this._log({ message, args, logLevel: LogLevel.DEBUG, color: "#e3e3e3" });
   }
 
-  public info(message: string, ...data: unknown[]) {
-    this._log({ message, data, logLevel: LogLevel.INFO });
+  public info(message: string, ...args: unknown[]) {
+    this._log({ message, args, logLevel: LogLevel.INFO });
   }
 
-  public warn(message: string, ...data: unknown[]) {
-    this._log({ message, data, logLevel: LogLevel.WARN, color: "#f4c542" });
+  public warn(message: string, ...args: unknown[]) {
+    this._log({ message, args, logLevel: LogLevel.WARN, color: "#f4c542" });
   }
 
-  public error(message: string, ...data: unknown[]) {
-    this._log({ message, data, logLevel: LogLevel.ERROR, color: "#e50000" });
+  public error(message: string, ...args: unknown[]) {
+    this._log({ message, args, logLevel: LogLevel.ERROR, color: "#e50000" });
   }
 
-  public alert(message: string, ...data: unknown[]) {
-    this._log({ message, data, logLevel: LogLevel.ALERT, color: "#ff00d0" });
+  public alert(message: string, ...args: unknown[]) {
+    this._log({ message, args, logLevel: LogLevel.ALERT, color: "#ff00d0" });
   }
 }
 

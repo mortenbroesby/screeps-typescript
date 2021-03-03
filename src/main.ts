@@ -5,9 +5,9 @@ import { logger } from "tools/logger";
 
 import { Brain } from "global/brain";
 
-const logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
+logger.logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
 
-logger.setLogLevel(logLevel);
+logger.global("Log-level: ", logger.logLevel);
 
 // Initialise main brain
 const mainBrain = new Brain();
