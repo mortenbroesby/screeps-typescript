@@ -10,6 +10,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-typescript2";
 import screeps from "rollup-plugin-screeps";
 
+import LogLevel from "./loglevel";
+
 const isProduction = process.env.NODE_ENV === "production";
 const defaultConfigTarget = isProduction ? "main" : "sim";
 
@@ -27,6 +29,8 @@ if (!destination) {
 
 const configFile = require("./screeps")[configTarget];
 
+const logLevel = isProduction ? LogLevel.ERROR : LogLevel.DEBUG;
+
 export default {
   input: "src/main.ts",
 
@@ -41,6 +45,7 @@ export default {
 
     replace({
       PRODUCTION: JSON.stringify(isProduction),
+      LOG_LEVEL: JSON.stringify(logLevel),
       __BUILD_TIME__: JSON.stringify(Date.now()),
       __REVISION__: JSON.stringify(require("git-rev-sync").short())
     }),
