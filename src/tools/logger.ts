@@ -1,4 +1,4 @@
-import { LogLevel } from "../enums/loglevel";
+import { LogLevel } from "../enums";
 
 class Logger {
   private _logLevel: LogLevel = LogLevel.DEBUG;
