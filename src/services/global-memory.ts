@@ -15,10 +15,10 @@ export class GlobalMemoryService extends Service {
     const settingsMemory: MemorySettings | undefined = Memory.settings;
     const settingsVersion: string = settingsMemory?.version ?? "-1";
 
-    const shouldResetMemory = settingsVersion !== defaultSettings.version;
+    const shouldResetMemory = settingsVersion !== defaultSettings().version;
     if (shouldResetMemory) {
-      logger.info(`Re-setting memory settings: ${JSON.stringify(defaultSettings)}`);
-      Memory.settings = defaultSettings;
+      logger.debug(`Re-setting memory settings: ${JSON.stringify(defaultSettings())}`);
+      Memory.settings = defaultSettings();
     }
 
     // Automatically delete memory of missing creeps

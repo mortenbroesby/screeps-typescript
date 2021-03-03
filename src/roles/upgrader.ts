@@ -14,7 +14,7 @@ export interface UpgraderMemory extends BaseRoleMemory {
 export class UpgraderRole extends BaseRole<UpgraderMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({
-      role: "Upgrader",
+      role: "upgrader",
       homeRoom,
       creep
     });
@@ -22,7 +22,7 @@ export class UpgraderRole extends BaseRole<UpgraderMemory> {
     this.memory = {
       ...defaultCreepMemory,
       homeRoom: homeRoom.name,
-      role: "Upgrader",
+      role: "upgrader",
       state: "harvest"
     };
 
@@ -63,7 +63,7 @@ export class UpgraderRole extends BaseRole<UpgraderMemory> {
 
     const didExecute = executeAction(taskMap[this.state]);
     if (!didExecute) {
-      logger.info(`Creep task mismatch: ${this.creep.name}`);
+      logger.debug(`Creep task mismatch: ${this.creep.name}`);
     }
   }
 

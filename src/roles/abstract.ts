@@ -1,12 +1,12 @@
 export interface BaseRoleInternals {
-  role: Role;
+  role: CreepRole;
   creep: Creep;
   homeRoom: Room;
 }
 
 export interface BaseRoleMemory extends CreepMemory {
   homeRoom: string;
-  role: Role;
+  role: CreepRole;
 }
 
 export abstract class BaseRole<TMemory extends BaseRoleMemory> {
@@ -24,7 +24,7 @@ export abstract class BaseRole<TMemory extends BaseRoleMemory> {
     return this._internals.homeRoom;
   }
 
-  public get role(): Role {
+  public get role(): CreepRole {
     return this._internals.role;
   }
 

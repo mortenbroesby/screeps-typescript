@@ -1,16 +1,16 @@
 type RoleMap = {
-  [key in Role]: number;
+  [key in CreepRole]: number;
 };
 
-const minimumCreepsInRoom: RoleMap = {
-  Harvester: 2,
-  Builder: 1,
-  Upgrader: 1,
-  Unassigned: 0
-};
+const minimumCreepsOfType: () => RoleMap = () => ({
+  harvester: 2,
+  builder: 1,
+  upgrader: 1,
+  unassigned: 0
+});
 
-export const defaultSettings: MemorySettings = {
-  version: "1.0.2",
+export const defaultSettings: () => MemorySettings = () => ({
+  version: "1.0.3",
 
-  minimumCreepsInRoom
-};
+  minimumCreepsOfType: minimumCreepsOfType()
+});

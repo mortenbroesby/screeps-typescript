@@ -34,7 +34,7 @@ export interface HarvesterMemory extends BaseRoleMemory {
 export class HarvesterRole extends BaseRole<HarvesterMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({
-      role: "Harvester",
+      role: "harvester",
       homeRoom,
       creep
     });
@@ -42,7 +42,7 @@ export class HarvesterRole extends BaseRole<HarvesterMemory> {
     this.memory = {
       ...defaultCreepMemory,
       homeRoom: homeRoom.name,
-      role: "Harvester",
+      role: "harvester",
       state: "harvest"
     };
 
@@ -83,7 +83,7 @@ export class HarvesterRole extends BaseRole<HarvesterMemory> {
 
     const didExecute = executeAction(taskMap[this.state]);
     if (!didExecute) {
-      logger.info(`Creep task mismatch: ${this.creep.name}`);
+      logger.debug(`Creep task mismatch: ${this.creep.name}`);
     }
   }
 

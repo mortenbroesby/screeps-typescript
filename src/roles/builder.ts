@@ -13,7 +13,7 @@ export interface BuilderMemory extends BaseRoleMemory {
 export class BuilderRole extends BaseRole<BuilderMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({
-      role: "Builder",
+      role: "builder",
       homeRoom,
       creep
     });
@@ -21,7 +21,7 @@ export class BuilderRole extends BaseRole<BuilderMemory> {
     this.memory = {
       ...defaultCreepMemory,
       homeRoom: homeRoom.name,
-      role: "Builder",
+      role: "builder",
       state: "harvest"
     };
 
@@ -62,7 +62,7 @@ export class BuilderRole extends BaseRole<BuilderMemory> {
 
     const didExecute = executeAction(taskMap[this.state]);
     if (!didExecute) {
-      logger.info(`Creep task mismatch: ${this.creep.name}`);
+      logger.debug(`Creep task mismatch: ${this.creep.name}`);
     }
   }
 
