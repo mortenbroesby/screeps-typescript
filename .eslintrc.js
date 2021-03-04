@@ -4,6 +4,9 @@ module.exports = {
     es6: true,
     node: true
   },
+
+  plugins: ["@typescript-eslint", "import"],
+
   extends: [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
@@ -14,12 +17,14 @@ module.exports = {
     "plugin:import/warnings",
     "plugin:import/typescript"
   ],
+
   parser: "@typescript-eslint/parser",
+
   parserOptions: {
     project: "tsconfig.json",
     sourceType: "module"
   },
-  plugins: ["@typescript-eslint", "import"],
+
   settings: {
     "import/parsers": {
       "@typescript-eslint/parser": [".ts", ".tsx"]
@@ -28,6 +33,7 @@ module.exports = {
       typescript: {}
     }
   },
+
   rules: {
     "@typescript-eslint/array-type": "error",
     "@typescript-eslint/consistent-type-assertions": "error",

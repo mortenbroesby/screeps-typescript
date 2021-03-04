@@ -1,17 +1,28 @@
-import { ICache } from "./Types";
+interface CacheOptions<T> {
+  ttl?: number;
+  max?: number;
+  data?: T[];
+}
 
-type CacheMap<T extends ICache<T>> = Map<string, T>;
+export interface ICache<T> {
+  key: string;
+  value: T;
 
-export class Cache<T extends ICache<T>> {
-  private _data: CacheMap<T> = new Map<string, T>();
+  expireTick: number;
+  next: ICache<T>;
+  prev: ICache<T>;
+}
 
-  private _max: number;
-  private _ttl: number;
+export class Cache<T> {
+  private _data: Map<string, ICache<T>> = new Map<string, ICache<T>>();
 
-  private _head: T | undefined;
-  private _tail: T | undefined;
+  private _max?: number;
+  private _ttl?: number;
 
-  public constructor(ttl = -1, max = 100, data: T[]) {
+  private _head?: ICache<T>;
+  private _tail?: ICache<T>;
+
+  public constructor({ ttl, max = 100, data }: CacheOptions<T> = {}) {
     this._max = max;
     this._ttl = ttl;
 
@@ -20,32 +31,32 @@ export class Cache<T extends ICache<T>> {
     }
   }
 
-  public get head(): T | undefined {
+  public get head(): ICache<T> | undefined {
     return this._head;
   }
-  public set head(entry: T | undefined) {
+  public set head(entry: ICache<T> | undefined) {
     this._head = entry;
   }
 
-  public get tail(): T | undefined {
+  public get tail(): ICache<T> | undefined {
     return this._tail;
   }
-  public set tail(entry: T | undefined) {
+  public set tail(entry: ICache<T> | undefined) {
     this._tail = entry;
   }
 
-  public get data(): CacheMap<T> {
+  public get data(): Map<string, ICache<T>> {
     return this._data;
   }
-  public set data(data: CacheMap<T>) {
+  public set data(data: Map<string, ICache<T>>) {
     this._data = data;
   }
 
-  public get ttl(): number {
+  public get ttl(): number | undefined {
     return this._ttl;
   }
 
-  public get max(): number {
+  public get max(): number | undefined {
     return this._max;
   }
 
@@ -53,21 +64,25 @@ export class Cache<T extends ICache<T>> {
     return this.evict();
   }
 
-  public keys(): { next: () => void } {
-    return this._iterator(entry => entry.key);
+  public keys(): { next: () => string | undefined } {
+    return this._iterator<string>(entry => entry.key);
+  }
+
+  private _isExpired<T>(entry: ICache<T>) {
+    return entry ? entry.expireTick <= Game.time : true;
   }
 
   public evict(): number {
     let count = 0;
 
     const max = this.max;
-    const now = this.ttl ? Date.now() : false;
 
-    for (let curr = this.head; curr; curr = curr.next) {
+    for (let current = this.head; current; current = current.next) {
       ++count;
-      if ((max && max < count) || (now && now > curr.expires)) {
-        this.data.delete(curr.key);
-        this._remove(curr);
+
+      if ((max && max < count) || this._isExpired(current)) {
+        this.data.delete(current.key);
+        this._remove(current);
       }
     }
 
@@ -77,7 +92,7 @@ export class Cache<T extends ICache<T>> {
   public has(key: string): boolean {
     const entry = this.data.get(key);
     if (entry) {
-      if (entry.expires && entry.expires < Date.now()) {
+      if (entry.expireTick && entry.expireTick < Game.time) {
         this.delete(key);
       } else {
         return true;
@@ -106,7 +121,7 @@ export class Cache<T extends ICache<T>> {
   public get(key: string): T | undefined {
     const entry = this.data.get(key);
     if (entry) {
-      if (entry.expires && entry.expires < Date.now()) {
+      if (entry.expireTick && entry.expireTick < Game.time) {
         this.delete(key);
       } else {
         return entry.value;
@@ -116,20 +131,21 @@ export class Cache<T extends ICache<T>> {
     return undefined;
   }
 
-  public set(key: string, value: unknown): Cache<T> {
-    let current: any = this.data.get(key);
+  public set(key: string, value: T): Cache<T> {
+    const exists = this.data.get(key);
 
-    if (current?.key) {
-      this._remove(current);
+    const expireTick = this.ttl ? Game.time + this.ttl : Infinity;
+
+    const current: ICache<T> = {
+      key,
+      value,
+      expireTick
+    } as ICache<T>;
+
+    if (exists?.key) {
+      this._remove(exists);
     } else {
-      this.data.set(key, (current = {} as any));
-    }
-
-    current.key = key;
-    current.value = value;
-
-    if (this.ttl) {
-      current.expires = Date.now() + this.ttl;
+      this.data.set(key, current);
     }
 
     this._insert(current);
@@ -158,10 +174,10 @@ export class Cache<T extends ICache<T>> {
   }
 
   private _iterator<TExpectedReturn>(
-    accessFn: (item: T) => TExpectedReturn
+    accessFn: (item: ICache<T>) => TExpectedReturn
   ): { next: () => TExpectedReturn | undefined } {
-    const max = this.max;
-    const now = this.ttl !== -1 ? Date.now() : false;
+    const max = this.max ?? Infinity;
+    const now = this.ttl ? Game.time : false;
 
     let current = this.head;
 
@@ -169,7 +185,7 @@ export class Cache<T extends ICache<T>> {
 
     return {
       next: () => {
-        while (current && (count > max || now > current.expires)) {
+        while (current && (count > max || now > current.expireTick)) {
           this.data.delete(current.key);
           this._remove(current);
           current = current.next;
@@ -182,7 +198,7 @@ export class Cache<T extends ICache<T>> {
     };
   }
 
-  private _remove(current: T) {
+  private _remove(current: ICache<T>) {
     if (!current.prev) {
       this.head = current.next;
     } else {
@@ -196,23 +212,23 @@ export class Cache<T extends ICache<T>> {
     }
   }
 
-  private _insert(curr: T) {
+  private _insert(current: ICache<T>) {
     if (!this.head) {
-      this.head = curr;
-      this.tail = curr;
+      this.head = current;
+      this.tail = current;
     } else {
       const node = this.head;
 
-      curr.prev = node.prev;
-      curr.next = node;
+      current.prev = node.prev;
+      current.next = node;
 
       if (!node.prev) {
-        this.head = curr;
+        this.head = current;
       } else {
-        node.prev.next = curr;
+        node.prev.next = current;
       }
 
-      node.prev = curr;
+      node.prev = current;
     }
   }
 }

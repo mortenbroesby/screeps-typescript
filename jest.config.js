@@ -15,5 +15,5 @@ module.exports = {
   testEnvironment: "screeps-jest",
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ["**/*.spec.ts", "!**/node_modules/**", "!**/dist/**"]
+  testMatch: ["**/*.spec.ts", "**/*.test.ts", "!**/node_modules/**", "!**/dist/**"]
 };
