@@ -106,12 +106,8 @@ export class CreepManager extends Manager {
 
     let didSpawnCreep = false;
 
-    sortedEntries.forEach(entry => {
-      if (didSpawnCreep) {
-        return logger.debug("didSpawnCreep: true ");
-      }
-
-      const [role, creepCountMinimum] = entry;
+    sortedEntries.forEach(([role, creepCountMinimum]) => {
+      if (didSpawnCreep) return;
 
       didSpawnCreep = this._spawnCreep(creeps, role as CreepRole, creepCountMinimum);
     });
