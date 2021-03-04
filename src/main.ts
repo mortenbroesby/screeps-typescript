@@ -7,7 +7,7 @@ import { Brain } from "global/brain";
 
 logger.logLevel = LOG_LEVEL ?? LogLevel.ERROR;
 
-logger.global("Log-level: ", logger.logLevel);
+logger.global("Log-level: ", LogLevel[logger.logLevel]);
 
 // Initialise main brain
 const mainBrain = new Brain();

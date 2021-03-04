@@ -1,5 +1,4 @@
 import { defaultSettings } from "config/settings";
-import { logger } from "./logger";
 
 const defaultMemory: () => Memory = () => ({
   powerCreeps: {},
@@ -22,8 +21,6 @@ function getMemory(): Memory {
 
     return parsedMemory;
   } catch (error) {
-    logger.warn("Error parsing memory, error: ", error);
-
     return defaultMemory();
   }
 }

@@ -1,9 +1,8 @@
-import { logger } from "tools/logger";
-
-import Constants from "global/constants";
-
 import { defaultCreepMemory } from "config/creep";
 import { defaultSettings } from "config/settings";
+import Constants from "global/constants";
+import { logger } from "tools/logger";
+
 import { Service } from "./abstract.service";
 
 export class MemoryService extends Service {
@@ -14,32 +13,28 @@ export class MemoryService extends Service {
   }
 
   public loop(): void {
-    this._cleanupOutdatedCreepMemory();
-    this._cleanupStaleCreepMemory();
-
     this._resetStaleMemory();
+
+    Object.entries(Memory.creeps).forEach(([creepName, creepMemory]) => {
+      this._checkCreepMemoryVersion(creepName, creepMemory);
+      this._cleanupStaleCreepMemory(creepName);
+    });
   }
 
-  private _cleanupOutdatedCreepMemory(): void {
-    // Warn if creep has outdated memory
-    for (const name in Memory.creeps) {
-      const creepMemory: CreepMemory = Memory.creeps[name];
-      const memoryVersion = creepMemory.version ?? "-1";
+  // Warn if creep has outdated memory
+  private _checkCreepMemoryVersion(creepName: string, memory: CreepMemory) {
+    const memoryVersion = memory.version ?? "-1";
 
-      if (memoryVersion !== defaultCreepMemory.version) {
-        logger.warn(`Creep has outdated memory: ${name}`);
-      }
+    if (memoryVersion !== defaultCreepMemory().version) {
+      logger.warn(`Creep has outdated memory: ${creepName}`);
     }
   }
 
-  private _cleanupStaleCreepMemory(): void {
-    // Automatically delete memory of missing creeps
-    for (const name in Memory.creeps) {
-      if (!(name in Game.creeps)) {
-        delete Memory.creeps[name];
-
-        logger.debug(`Clearing non-existing creep memory: ${name}`);
-      }
+  private _cleanupStaleCreepMemory(creepName: string): void {
+    const matchingCreep: Creep | undefined = Game.creeps[creepName];
+    if (!matchingCreep) {
+      logger.debug(`Clearing non-existing creep memory: ${creepName}`);
+      delete Memory.creeps[creepName];
     }
   }
 

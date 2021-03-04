@@ -5,22 +5,22 @@ import { executeAction } from "tools/utils";
 import { BaseRole, BaseRoleMemory } from "./abstract.role";
 import { depositTask, harvestTask } from "./shared/shared-tasks";
 
-const getTargetStructures = (room: Room) => {
+type TargetStructure = StructureExtension | StructureSpawn | StructureTower;
+
+export const getTargetStructures = (room: Room): TargetStructure[] => {
   const targets = room.find(FIND_STRUCTURES, {
     filter: structure => {
-      type MatchedStructure = StructureExtension | StructureSpawn | StructureTower;
-
       const structureMatches =
         structure.structureType === STRUCTURE_EXTENSION ||
         structure.structureType === STRUCTURE_SPAWN ||
         structure.structureType === STRUCTURE_TOWER;
 
-      const freeCapacity = (structure as MatchedStructure).store?.getFreeCapacity(RESOURCE_ENERGY) ?? 0;
+      const freeCapacity = (structure as TargetStructure).store?.getFreeCapacity(RESOURCE_ENERGY) ?? 0;
       const hasCapacity = freeCapacity > 0;
 
       return structureMatches && hasCapacity;
     }
-  });
+  }) as TargetStructure[];
 
   return targets;
 };
@@ -40,7 +40,7 @@ export class HarvesterRole extends BaseRole<HarvesterMemory> {
     });
 
     this.memory = {
-      ...defaultCreepMemory,
+      ...defaultCreepMemory(),
       homeRoom: homeRoom.name,
       role: "harvester",
       state: "harvest"

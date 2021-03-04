@@ -1,12 +1,25 @@
-type RoleMap = {
-  [key in CreepRole]: number;
-};
+import { Priority } from "enums";
 
-const minimumCreepsOfType: () => RoleMap = () => ({
-  harvester: 2,
-  builder: 1,
-  upgrader: 1,
-  unassigned: 0
+const minimumCreepsOfType: () => MinimumCreepCountMap = () => ({
+  harvester: {
+    count: 2,
+    priority: Priority.Critical
+  },
+
+  builder: {
+    count: 2,
+    priority: Priority.Standard
+  },
+
+  upgrader: {
+    count: 2,
+    priority: Priority.Standard
+  },
+
+  unassigned: {
+    count: 0,
+    priority: Priority.None
+  }
 });
 
 export const defaultSettings: () => MemorySettings = () => ({

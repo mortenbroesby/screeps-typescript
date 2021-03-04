@@ -7,6 +7,7 @@ import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
 import { UpgraderRole } from "roles/upgrader.role";
 import { HarvesterRole } from "roles/harvester.role";
 import { BuilderRole } from "roles/builder.role";
+import { defaultCreepMemory } from "config/creep";
 
 interface CreepCollection {
   [role: string]: Creep[];
@@ -93,17 +94,22 @@ export class CreepManager extends Manager {
 
       this.spawn.room.visual.text(`🛠️${role}`, position.x + 1, position.y, style);
 
-      return logger.debug(`[Abort Spawn] Is already spawning: ${this.currentRoom.name}`);
+      return logger.debug(`[Abort Spawn] Is already spawning: ${this.spawn.spawning.name}`);
     }
 
     const minimumCreepsOfType = Memory.settings?.minimumCreepsOfType ?? defaultSettings().minimumCreepsOfType;
+    const sortedEntries = Object.entries(minimumCreepsOfType).sort(([, a], [, b]) => a.priority - b.priority);
 
-    Object.keys(minimumCreepsOfType).forEach((role, minimumOfType) => {
+    sortedEntries.forEach(entry => {
+      const [role, creepCountMinimum] = entry;
+      const { count } = creepCountMinimum;
+
       const creepsOfType = _.filter(creeps, creep => creep.memory.role === role);
 
-      logger.debug(`Creeps with role ${role} - count: ${creepsOfType.length}`);
+      // console.log(`${role}: target count: ${count} - priority: ${priority}`);
+      // logger.debug(`Creeps with role ${role} - count: ${creepsOfType.length}`);
 
-      if (creepsOfType.length < minimumOfType) {
+      if (creepsOfType.length < count) {
         this._trySpawningCreep(role as CreepRole);
       }
     });
@@ -116,7 +122,10 @@ export class CreepManager extends Manager {
 
     const creepName = `${role}_${Game.time}`;
 
-    const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName);
+    const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, {
+      memory: defaultCreepMemory(role)
+    });
+
     if (didSpawnCreep === OK) {
       logger.debug(`Spawned new ${role} with name ${creepName}`);
     }

@@ -2,7 +2,8 @@ import { defaultCreepMemory } from "config/creep";
 import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
 import { BaseRole, BaseRoleMemory } from "./abstract.role";
-import { buildTask, harvestTask } from "./shared/shared-tasks";
+import { getTargetStructures } from "./harvester.role";
+import { buildTask, depositTask, harvestTask, moveToControllerOrSpawnTask } from "./shared/shared-tasks";
 
 type BuilderState = "build" | "harvest";
 
@@ -19,7 +20,7 @@ export class BuilderRole extends BaseRole<BuilderMemory> {
     });
 
     this.memory = {
-      ...defaultCreepMemory,
+      ...defaultCreepMemory(),
       homeRoom: homeRoom.name,
       role: "builder",
       state: "harvest"
@@ -74,11 +75,23 @@ export class BuilderRole extends BaseRole<BuilderMemory> {
   }
 
   private _tryBuilding(): void {
-    const targets = this.creep.room.find(FIND_CONSTRUCTION_SITES) ?? [];
+    const constructionTargets = this.creep.room.find(FIND_CONSTRUCTION_SITES) ?? [];
 
-    const didBuild = buildTask(this.creep, targets);
-    if (!didBuild) {
-      logger.debug(`Creep build unsuccessful: ${this.creep.name}`);
+    if (constructionTargets.length === 0) {
+      const depositTargets = getTargetStructures(this.creep.room);
+
+      const didDeposit = depositTask(this.creep, depositTargets);
+      if (!didDeposit) {
+        const didMove = moveToControllerOrSpawnTask(this.creep, this.homeRoom);
+        if (!didMove) {
+          logger.debug(`Creep move unsuccessful: ${this.creep.name}`);
+        }
+      }
+    } else {
+      const didBuild = buildTask(this.creep, constructionTargets);
+      if (!didBuild) {
+        logger.debug(`Creep build unsuccessful: ${this.creep.name}`);
+      }
     }
   }
 }
