@@ -1,4 +1,5 @@
 declare const PRODUCTION: boolean;
+declare const LOG_LEVEL: number;
 
 declare const __REVISION__: string;
 declare const __BUILD_TIME__: string;

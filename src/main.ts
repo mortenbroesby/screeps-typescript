@@ -5,7 +5,7 @@ import { logger } from "tools/logger";
 
 import { Brain } from "global/brain";
 
-logger.logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
+logger.logLevel = LOG_LEVEL ?? LogLevel.ERROR;
 
 logger.global("Log-level: ", LogLevel[logger.logLevel]);
 

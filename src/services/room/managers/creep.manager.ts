@@ -1,13 +1,13 @@
+import { defaultCreepMemory } from "config/creep";
 import { defaultSettings } from "config/settings";
+import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
+import { BuilderRole } from "roles/builder.role";
+import { HarvesterRole } from "roles/harvester.role";
+import { UpgraderRole } from "roles/upgrader.role";
 import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
-import { Manager } from "./abstract.manager";
 
-import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
-import { UpgraderRole } from "roles/upgrader.role";
-import { HarvesterRole } from "roles/harvester.role";
-import { BuilderRole } from "roles/builder.role";
-import { defaultCreepMemory } from "config/creep";
+import { Manager } from "./abstract.manager";
 
 interface CreepCollection {
   [role: string]: Creep[];
@@ -44,6 +44,10 @@ export class CreepManager extends Manager {
     return firstSpawnInRoom;
   }
 
+  public get spawning(): Spawning | null {
+    return this.spawn?.spawning ?? null;
+  }
+
   private _createCollection(): CreepCollection {
     const collection: CreepCollection = {};
 
@@ -77,12 +81,12 @@ export class CreepManager extends Manager {
   }
 
   private _trySpawningCreeps(creeps: Creep[]): void {
-    if (this.spawn === undefined) {
+    if (!this.spawn) {
       return logger.debug(`[Abort Spawn] No spawn in room: ${this.currentRoom.name}`);
     }
 
-    if (this.spawn.spawning) {
-      const spawningCreep = Game.creeps[this.spawn.spawning.name];
+    if (this.spawning) {
+      const spawningCreep = Game.creeps[this.spawning.name];
 
       const { role } = spawningCreep.memory;
       const { pos: position } = this.spawn;
@@ -94,41 +98,61 @@ export class CreepManager extends Manager {
 
       this.spawn.room.visual.text(`🛠️${role}`, position.x + 1, position.y, style);
 
-      return logger.debug(`[Abort Spawn] Is already spawning: ${this.spawn.spawning.name}`);
+      return logger.debug(`[Abort Spawn] Is already spawning: ${this.spawning.name}`);
     }
 
     const minimumCreepsOfType = Memory.settings?.minimumCreepsOfType ?? defaultSettings().minimumCreepsOfType;
     const sortedEntries = Object.entries(minimumCreepsOfType).sort(([, a], [, b]) => a.priority - b.priority);
 
-    sortedEntries.forEach(entry => {
-      const [role, creepCountMinimum] = entry;
-      const { count } = creepCountMinimum;
+    let didSpawnCreep = false;
 
-      const creepsOfType = _.filter(creeps, creep => creep.memory.role === role);
+    sortedEntries.forEach(([role, creepCountMinimum]) => {
+      if (didSpawnCreep) return;
 
-      // console.log(`${role}: target count: ${count} - priority: ${priority}`);
-      // logger.debug(`Creeps with role ${role} - count: ${creepsOfType.length}`);
-
-      if (creepsOfType.length < count) {
-        this._trySpawningCreep(role as CreepRole);
-      }
+      didSpawnCreep = this._spawnCreep(creeps, role as CreepRole, creepCountMinimum);
     });
   }
 
-  private _trySpawningCreep(role: CreepRole): void {
-    if (this.spawn === undefined) {
-      return logger.debug(`[No spawn] Skipping spawning: ${this.currentRoom.name}`);
+  private _spawnCreep(creeps: Creep[], role: CreepRole, { count }: MinimumCreepCount): boolean {
+    type MinimumMap = {
+      [key in CreepRole]: () => number;
+    };
+
+    const minimumMap: MinimumMap = {
+      harvester: () => Math.min(count, this.currentRoom.find(FIND_SOURCES).length),
+      builder: () => count,
+      upgrader: () => count,
+      unassigned: () => count
+    };
+
+    const creepsOfType = _.filter(creeps, creep => creep.memory.role === role);
+    const minimumCount = minimumMap[role]();
+
+    if (creepsOfType.length < minimumCount) {
+      return this._trySpawningCreep(role);
+    }
+
+    return false;
+  }
+
+  private _trySpawningCreep(role: CreepRole): boolean {
+    if (!this.spawn) {
+      logger.debug(`[No spawn] Skipping spawning: ${this.currentRoom.name}`);
+      return false;
     }
 
     const creepName = `${role}_${Game.time}`;
-
-    const didSpawnCreep = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, {
+    const creepOptions: SpawnOptions = {
       memory: defaultCreepMemory(role)
-    });
+    };
 
-    if (didSpawnCreep === OK) {
+    const spawnResponse = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, creepOptions);
+    if (spawnResponse === OK) {
       logger.debug(`Spawned new ${role} with name ${creepName}`);
+      return true;
     }
+
+    return false;
   }
 
   private _tryAssigningRoles(creeps: Creep[]): void {
