@@ -7,6 +7,7 @@ export class Cache<T extends ICache<T>> {
 
   private _max: number;
   private _ttl: number;
+
   private _head: T | undefined;
   private _tail: T | undefined;
 
@@ -86,6 +87,12 @@ export class Cache<T extends ICache<T>> {
     return false;
   }
 
+  public clear(): void {
+    this.data.clear();
+    this.head = undefined;
+    this.tail = undefined;
+  }
+
   public delete(key: string): boolean {
     const target = this.data.get(key);
     if (target && this.data.delete(key)) {
@@ -131,13 +138,17 @@ export class Cache<T extends ICache<T>> {
     return this;
   }
 
+  public entries(): { next: () => void } {
+    return this._iterator(entry => [entry.key, entry.value]);
+  }
+
   public [Symbol.iterator](): { next: () => void } {
     return this._iterator(entry => [entry.key, entry.value]);
   }
 
-  public forEach(callback): void {
-    const iterator = this._iterator(entry => {
-      callback(entry.key, entry.value); // todo: support thisArg parameter
+  public forEach(callback: (key: string, value: T) => void): void {
+    const iterator = this._iterator<boolean>(entry => {
+      callback(entry.key, entry.value);
       return true;
     });
 
@@ -146,7 +157,9 @@ export class Cache<T extends ICache<T>> {
     }
   }
 
-  private _iterator(accessFn: (item: T) => void): { next: () => void } {
+  private _iterator<TExpectedReturn>(
+    accessFn: (item: T) => TExpectedReturn
+  ): { next: () => TExpectedReturn | undefined } {
     const max = this.max;
     const now = this.ttl !== -1 ? Date.now() : false;
 
