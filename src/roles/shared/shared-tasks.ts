@@ -59,3 +59,25 @@ export function upgradeTask(creep: Creep): boolean {
 
   return true;
 }
+
+export function moveToControllerOrSpawnTask(creep: Creep, room: Room): boolean {
+  const roomController = creep.room.controller;
+  if (roomController) {
+    creep.moveTo(roomController, { visualizePathStyle: { stroke: "#ffffff" } });
+
+    return true;
+  }
+
+  const allSpawnsInRoom = room.find(FIND_MY_STRUCTURES, {
+    filter: structure => structure.structureType === STRUCTURE_SPAWN
+  }) as StructureSpawn[];
+
+  const firstSpawnInRoom = allSpawnsInRoom[0];
+  if (firstSpawnInRoom) {
+    creep.moveTo(firstSpawnInRoom, { visualizePathStyle: { stroke: "#ffffff" } });
+
+    return true;
+  }
+
+  return false;
+}
