@@ -2,7 +2,7 @@ import { Priority } from "enums";
 
 const minimumCreepsOfType: () => MinimumCreepCountMap = () => ({
   harvester: {
-    count: 2,
+    count: 1,
     priority: Priority.Critical
   },
 
