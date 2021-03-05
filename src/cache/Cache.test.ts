@@ -1,16 +1,16 @@
-import { Cache } from "./Cache";
+import ScreepsCache from "screeps-lru-cache";
 
 describe("LRUCache", () => {
   describe("constructor", () => {
     it("should create an instance of LRUCache", () => {
-      const cache = new Cache();
-      expect(cache).toBeInstanceOf(Cache);
+      const cache = new ScreepsCache();
+      expect(cache).toBeInstanceOf(ScreepsCache);
     });
   });
 });
 
 describe("Cache [LRU] - Least recently used", () => {
-  const cache = new Cache<string, number>({ maxSize: 3 });
+  const cache = new ScreepsCache<string, number>({ maxSize: 3 });
 
   it("should limit the number of entries", () => {
     cache.set("a", 1);
@@ -36,7 +36,7 @@ describe("Cache [LRU] - Least recently used", () => {
 });
 
 describe("Cache [Map] - Basic map-like functionality", () => {
-  const cache = new Cache<string, number>();
+  const cache = new ScreepsCache<string, number>();
 
   it("should allow existing keys to be found", () => {
     cache.set("a", 42);
@@ -133,7 +133,7 @@ describe("Cache [TTL] - Time to live expiration", () => {
     time: 0
   } as Game);
 
-  const cache = new Cache({
+  const cache = new ScreepsCache({
     entryExpirationTimeInTicks: 10,
     gameInstance
   });
