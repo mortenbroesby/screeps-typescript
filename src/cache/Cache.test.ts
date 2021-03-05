@@ -93,13 +93,32 @@ describe("Cache [Map] - Basic map-like functionality", () => {
     expect(count).toBe(3);
   });
 
-  //  it("should support native iteration", () => {
-  //    const input = [1, 2, 3];
-  //
-  //    for (const [item, index] of new Cache({ data: input })) {
-  //      expect(item).toBe(input[index]);
-  //    }
-  //  });
+  it("should support native iteration", () => {
+    const inputValues = [1, 2, 3];
+
+    const testCache = new Cache({ data: inputValues });
+
+    for (const { value } of testCache) {
+      const lastItem = inputValues.pop();
+      expect(value).toBe(lastItem);
+    }
+  });
+
+  it("should support entries", () => {
+    cache.set("a", 40);
+    cache.set("b", 41);
+    cache.set("c", 42);
+
+    const entries = cache.entries();
+
+    expect(entries.next().value).toStrictEqual(["c", 42]);
+    expect(entries.next().value).toStrictEqual(["b", 41]);
+    expect(entries.next().value).toStrictEqual(["a", 40]);
+
+    cache.set("a", 40);
+    cache.set("b", 41);
+    cache.set("c", 42);
+  });
 
   it("should support forEach looping", () => {
     const values = [1, 2, 3, 4];

@@ -47,14 +47,10 @@ export class Cache<TCacheType> implements Iterable<ICache<TCacheType>> {
     this._ttl = ttl;
 
     if (data) {
-      if (data[Symbol.iterator]) {
-        for (const [key, value] of data as any) {
-          this.set(key, value);
-        }
-      } else {
-        Object.keys(data).forEach((key: any) => this.set(key, data[key]));
-      }
+      Object.keys(data).forEach((key: any) => this.set(key, data[key]));
     }
+
+    return this;
   }
 
   public get head(): ICache<TCacheType> | undefined {
@@ -175,14 +171,14 @@ export class Cache<TCacheType> implements Iterable<ICache<TCacheType>> {
     return this;
   }
 
-  // public entries() {
-  //   return this._iterator(entry => [entry.key, entry.value]);
-  // }
+  public entries(): Iterator<(string | TCacheType)[], any, undefined> {
+    return this._iterator(entry => [entry.key, entry.value]);
+  }
 
   /**
    * Provide iterator for looping.
    */
-  public [Symbol.iterator](): Iterator<ICache<TCacheType>> {
+  public [Symbol.iterator](): Iterator<ICache<TCacheType>, any, undefined> {
     return this._iterator(entry => entry);
   }
 
@@ -224,7 +220,7 @@ export class Cache<TCacheType> implements Iterable<ICache<TCacheType>> {
   /**
    * Iterate over entries in cache.
    */
-  private _iterator<TValue>(accessFn: (item: ICache<TCacheType>) => TValue): Iterator<TValue> {
+  private _iterator<TValue>(iterateFn: (item: ICache<TCacheType>) => TValue): Iterator<TValue> {
     let current = this.head;
     const count = 0;
 
@@ -241,7 +237,7 @@ export class Cache<TCacheType> implements Iterable<ICache<TCacheType>> {
 
         if (iteration) {
           return {
-            value: accessFn(iteration),
+            value: iterateFn(iteration),
             done: false
           };
         }
