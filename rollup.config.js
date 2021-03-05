@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 "use strict";
 
+import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
 import clear from "rollup-plugin-clear";
 import replace from "rollup-plugin-replace";
-import resolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-typescript2";
 import screeps from "rollup-plugin-screeps";
+import typescript from "rollup-plugin-typescript2";
+import babel from "rollup-plugin-babel";
+import { uglify } from "rollup-plugin-uglify";
 
 import LogLevel from "./loglevel";
 
@@ -50,19 +51,22 @@ export default {
       __REVISION__: JSON.stringify(require("git-rev-sync").short())
     }),
 
-    resolve({ rootDir: "src" }),
-
-    commonjs({
-      namedExports: {
-        // left-hand side can be an absolute path, a path
-        // relative to the current directory, or the name
-        // of a module in node_modules
-
-        "node_modules/my-lib/index.js": ["named"]
-      }
+    babel({
+      exclude: "node_modules/**"
     }),
 
+    commonjs(),
+
     typescript({ tsconfig: "./tsconfig.json" }),
+
+    resolve({
+      browser: true,
+      jsnext: true,
+      main: true,
+      preferBuiltins: false
+    }),
+
+    uglify(),
 
     screeps({
       config: configFile,
