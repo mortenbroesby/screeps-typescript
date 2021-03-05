@@ -1,10 +1,4 @@
-import { mockGlobal } from "screeps-jest";
-
 import { Cache } from "./Cache";
-
-mockGlobal<Game>("Game", {
-  time: 1
-});
 
 describe("LRUCache", () => {
   describe("constructor", () => {
@@ -134,30 +128,30 @@ describe("Cache [Map] - Basic map-like functionality", () => {
   });
 });
 
-/*
 describe("Cache [TTL] - Time to live expiration", () => {
-  const cache = new Cache({ entryExpirationTimeInTicks: 10 });
+  const gameInstance = (global.Game = {
+    time: 0
+  } as Game);
+
+  const cache = new Cache({
+    entryExpirationTimeInTicks: 10,
+    gameInstance
+  });
 
   it("should expire keys", () => {
     // Start time at 0
-    mockGlobal<Game>("Game", {
-      time: 0
-    });
+    global.Game.time = 0;
 
     cache.set("a", 23);
     expect(cache.get("a")).toBe(23);
 
     // Fast-forward past TTL
-    // Start time at 0
-    mockGlobal<Game>("Game", {
-      time: 50
-    });
+    global.Game.time = 50;
 
-    expect(cache.get("a")).toBe(undefined);
+    expect(cache.get("a")).toBe(null);
   });
 
   afterEach(() => {
     cache.clear();
   });
 });
-*/
