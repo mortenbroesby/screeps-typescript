@@ -13,7 +13,20 @@ export interface ICache<T> {
   prev: ICache<T>;
 }
 
-export class Cache<TCacheType> {
+interface Iterable<T> {
+  [Symbol.iterator](): Iterator<T>;
+}
+
+/**
+ * A cache that can exhibit both least recently used (LRU) and max time to live (TTL) eviction policies.
+ *
+ * Internally the cache is backed by a `Map` but also maintains a linked list of entries to support the eviction policies.
+ *
+ * Credits go to:
+ *  @ ianp -> https://github.com/ianp/es6-lru-cache
+ *  @ warinternal -> https://github.com/screepers/screeps-snippets
+ */
+export class Cache<TCacheType> implements Iterable<ICache<TCacheType>> {
   private _data: Map<string, ICache<TCacheType>> = new Map<string, ICache<TCacheType>>();
 
   private _max?: number;
@@ -22,12 +35,25 @@ export class Cache<TCacheType> {
   private _head?: ICache<TCacheType>;
   private _tail?: ICache<TCacheType>;
 
+  /**
+   * Cache constructor
+   *
+   * @param {number} ttl - The maximum time to live, in milliseconds.
+   * @param {number} max - The maximum number of entries in the cache.
+   * @param {Object | Iterable} data - The data to initialize the cache with.
+   */
   public constructor({ ttl, max, data }: CacheOptions<TCacheType> = {}) {
     this._max = max;
     this._ttl = ttl;
 
     if (data) {
-      Object.keys(data).forEach((key: any) => this.set(key, data[key]));
+      if (data[Symbol.iterator]) {
+        for (const [key, value] of data as any) {
+          this.set(key, value);
+        }
+      } else {
+        Object.keys(data).forEach((key: any) => this.set(key, data[key]));
+      }
     }
   }
 
@@ -64,16 +90,8 @@ export class Cache<TCacheType> {
     return this.evict();
   }
 
-  public keys(): { next: () => string | undefined } {
+  public keys(): Iterator<string, any, undefined> {
     return this._iterator<string>(entry => entry.key);
-  }
-
-  private _hasReachedMax(count: number): boolean {
-    return this.max < count;
-  }
-
-  private _hasExpired<T>(entry?: ICache<T>): boolean {
-    return entry ? (entry?.expireTick ?? Infinity) <= Game.time : true;
   }
 
   public evict(): number {
@@ -157,30 +175,58 @@ export class Cache<TCacheType> {
     return this;
   }
 
-  public entries(): { next: () => void } {
-    return this._iterator(entry => [entry.key, entry.value]);
+  // public entries() {
+  //   return this._iterator(entry => [entry.key, entry.value]);
+  // }
+
+  /**
+   * Provide iterator for looping.
+   */
+  public [Symbol.iterator](): Iterator<ICache<TCacheType>> {
+    return this._iterator(entry => entry);
   }
 
-  public [Symbol.iterator](): { next: () => void } {
-    return this._iterator(entry => [entry.key, entry.value]);
-  }
+  /**
+   * Iterate over entries in cache.
+   */
+  public forEach(callback: (key: TCacheType, index: number) => void): void {
+    let count = 0;
 
-  public forEach(callback: (key: string, value: TCacheType) => void): void {
-    const iterator = this._iterator<boolean>(entry => {
-      callback(entry.key, entry.value);
+    const iterator = this._iterator(entry => {
+      callback(entry.value, count);
       return true;
     });
 
-    while (iterator.next()) {
+    while (!iterator.next().done) {
+      count++;
       void 0;
     }
   }
 
-  private _iterator<TExpectedReturn>(
-    accessFn: (item: ICache<TCacheType>) => TExpectedReturn
-  ): { next: () => TExpectedReturn | undefined } {
+  /**
+   * Has count reached max?
+   *
+   * @param count - The count to look up.
+   */
+  private _hasReachedMax(count: number): boolean {
+    return this.max < count;
+  }
+
+  /**
+   * Has entry expired?
+   *
+   * @param entry - The entry to look-up.
+   */
+  private _hasExpired<T>(entry?: ICache<T>): boolean {
+    return entry ? (entry?.expireTick ?? Infinity) <= Game.time : true;
+  }
+
+  /**
+   * Iterate over entries in cache.
+   */
+  private _iterator<TValue>(accessFn: (item: ICache<TCacheType>) => TValue): Iterator<TValue> {
     let current = this.head;
-    let count = 0;
+    const count = 0;
 
     return {
       next: () => {
@@ -190,15 +236,27 @@ export class Cache<TCacheType> {
           current = current.next;
         }
 
-        const it = current;
+        const iteration = current;
         current = current && current.next;
-        count++;
 
-        return it ? accessFn(it) : undefined;
+        if (iteration) {
+          return {
+            value: accessFn(iteration),
+            done: false
+          };
+        }
+
+        return {
+          value: undefined,
+          done: true
+        };
       }
     };
   }
 
+  /**
+   * Remove entry from the linked list.
+   */
   private _remove(current: ICache<TCacheType>) {
     if (!current.prev) {
       this.head = current.next;
@@ -213,6 +271,9 @@ export class Cache<TCacheType> {
     }
   }
 
+  /**
+   * Insert entry into the linked list.
+   */
   private _insert(current: ICache<TCacheType>) {
     if (!this.head) {
       this.head = current;

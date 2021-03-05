@@ -32,7 +32,7 @@ describe("Cache [LRU] - Least recently used", () => {
 });
 
 describe("Cache [Map] - Basic map-like functionality", () => {
-  const cache = new Cache({});
+  const cache = new Cache<number | undefined | null>({});
 
   it("should allow existing keys to be found", () => {
     cache.set("a", 42);
@@ -85,21 +85,40 @@ describe("Cache [Map] - Basic map-like functionality", () => {
 
     let count = 0;
     const keys = cache.keys();
-    while (keys.next() && count < 10) {
+
+    while (keys.next().value && count < 10) {
       ++count;
     }
 
     expect(count).toBe(3);
   });
 
+  //  it("should support native iteration", () => {
+  //    const input = [1, 2, 3];
+  //
+  //    for (const [item, index] of new Cache({ data: input })) {
+  //      expect(item).toBe(input[index]);
+  //    }
+  //  });
+
   it("should support forEach looping", () => {
-    cache.set("a", 42);
-    cache.set("b", 42);
-    cache.set("c", 42);
+    const values = [1, 2, 3, 4];
+
+    values.forEach(value => {
+      cache.set(`${value}`, value);
+    });
 
     let count = 0;
     cache.forEach(() => ++count);
-    expect(count).toBe(3);
+    expect(count).toBe(4);
+
+    count = 0;
+    const reversed = values.reverse();
+    cache.forEach((item, index) => {
+      expect(item).toBe(reversed[index]);
+      expect(index).toBe(count);
+      count++;
+    });
   });
 
   afterEach(() => {
