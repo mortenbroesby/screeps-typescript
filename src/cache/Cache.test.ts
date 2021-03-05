@@ -94,8 +94,7 @@ describe("Cache [Map] - Basic map-like functionality", () => {
   });
 
   it("should support native iteration", () => {
-    const inputValues = [1, 2, 3];
-
+    const inputValues = [1, 2, 3, 4, 5];
     const testCache = new Cache({ data: inputValues });
 
     for (const { value } of testCache) {
