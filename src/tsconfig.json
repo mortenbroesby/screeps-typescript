@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "suppressImplicitAnyIndexErrors": true,
     "forceConsistentCasingInFileNames": true,
-    "declaration": true,
+    "declaration": false,
     "sourceMap": true,
     "noUnusedLocals": true,
     "resolveJsonModule": true,

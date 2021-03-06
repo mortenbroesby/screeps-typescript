@@ -21,7 +21,7 @@ module.exports = {
   parser: "@typescript-eslint/parser",
 
   parserOptions: {
-    project: "tsconfig.json",
+    project: "./tsconfig.eslint.json",
     sourceType: "module"
   },
 
@@ -46,7 +46,7 @@ module.exports = {
         accessibility: "explicit"
       }
     ],
-    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/restrict-template-expressions": "off",
     "@typescript-eslint/no-parameter-properties": "off",
     "@typescript-eslint/no-unused-expressions": "error",
     "@typescript-eslint/no-unsafe-call": "off",
@@ -99,10 +99,10 @@ module.exports = {
     "@typescript-eslint/naming-convention": [
       "error",
       {
-        "selector": "memberLike",
-        "modifiers": ["private"],
-        "format": ["camelCase"],
-        "leadingUnderscore": "require"
+        selector: "memberLike",
+        modifiers: ["private"],
+        format: ["camelCase"],
+        leadingUnderscore: "require"
       }
     ]
   }

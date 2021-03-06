@@ -1,4 +1,4 @@
-"use strict";
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
@@ -8,8 +8,6 @@ import screeps from "rollup-plugin-screeps";
 import typescript from "rollup-plugin-typescript2";
 import babel from "rollup-plugin-babel";
 import { uglify } from "rollup-plugin-uglify";
-
-import LogLevel from "./loglevel";
 
 const isProduction = process.env.NODE_ENV === "production";
 const defaultConfigTarget = isProduction ? "main" : "sim";
@@ -28,8 +26,6 @@ if (!destination) {
 
 const configFile = require("./screeps")[configTarget];
 
-const logLevel = isProduction ? LogLevel.ERROR : LogLevel.DEBUG;
-
 export default {
   input: "src/main.ts",
 
@@ -44,7 +40,6 @@ export default {
 
     replace({
       PRODUCTION: JSON.stringify(isProduction),
-      LOG_LEVEL: JSON.stringify(logLevel),
       PROFILER_ENABLED: JSON.stringify(!isProduction),
 
       __BUILD_TIME__: JSON.stringify(Date.now()),

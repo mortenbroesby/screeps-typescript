@@ -9,7 +9,7 @@ setupInitialMemory();
 import { init } from "./profiler";
 global.Profiler = init();
 
-logger.logLevel = LOG_LEVEL ?? LogLevel.ERROR;
+logger.logLevel = PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
 
 logger.global("Log-level: ", LogLevel[logger.logLevel]);
 

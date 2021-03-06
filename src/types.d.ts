@@ -1,5 +1,4 @@
 declare const PRODUCTION: boolean;
-declare const LOG_LEVEL: number;
 declare const PROFILER_ENABLED: boolean;
 
 declare const __REVISION__: string;
