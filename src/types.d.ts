@@ -45,6 +45,7 @@ interface ProfilerData {
 }
 
 interface Profiler {
+  isEnabled(): boolean;
   clear(): void;
   output(): void;
   start(): void;

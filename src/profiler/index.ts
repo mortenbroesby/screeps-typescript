@@ -5,17 +5,24 @@
 
 export const defaultProfileMemory: () => ProfilerMemory = () => ({
   data: {},
-  total: 0
+  total: 0,
+  start: Game.time
 });
+
+let isProfilingEnabled = false;
 
 export function init(): Profiler {
   Memory.profiler = defaultProfileMemory();
 
   const cli: Profiler = {
+    isEnabled() {
+      return isProfilingEnabled;
+    },
+
     clear() {
       Memory.profiler = defaultProfileMemory();
 
-      if (isEnabled()) {
+      if (isProfilingEnabled) {
         Memory.profiler.start = Game.time;
       }
 
@@ -23,7 +30,7 @@ export function init(): Profiler {
     },
 
     output() {
-      if (!isEnabled()) {
+      if (!isProfilingEnabled) {
         return;
       }
 
@@ -32,31 +39,32 @@ export function init(): Profiler {
       return "Done";
     },
 
-    start() {
-      if (!Memory.profiler) {
-        Memory.profiler = defaultProfileMemory();
-      }
-
-      Memory.profiler.start = Game.time;
-      return "Profiler started";
-    },
-
     status() {
-      if (isEnabled()) {
+      if (isProfilingEnabled) {
         return "Profiler is running";
       }
 
       return "Profiler is stopped";
     },
 
-    stop() {
-      if (!isEnabled()) {
-        return;
+    start() {
+      if (!Memory.profiler) {
+        Memory.profiler = defaultProfileMemory();
       }
 
-      const timeRunning = Game.time - (Memory.profiler.start ?? 0);
-      Memory.profiler.total += timeRunning;
-      delete Memory.profiler.start;
+      isProfilingEnabled = true;
+      Memory.profiler.start = Game.time;
+
+      return "Profiler started";
+    },
+
+    stop() {
+      if (isProfilingEnabled) {
+        isProfilingEnabled = false;
+        const timeRunning = Game.time - (Memory.profiler.start ?? 0);
+        Memory.profiler.total += timeRunning;
+        delete Memory.profiler.start;
+      }
 
       return "Profiler stopped";
     },
@@ -105,10 +113,8 @@ function wrapFunction(obj: object, key: any, className?: string) {
 
   Reflect.set(obj, savedName, originalFunction);
 
-  // /////////
-
   Reflect.set(obj, key, function (this: any, ...args: any[]) {
-    if (isEnabled()) {
+    if (isProfilingEnabled) {
       const start = Game.cpu.getUsed();
       const result = originalFunction.apply(this, args);
       const end = Game.cpu.getUsed();
@@ -146,11 +152,9 @@ export function Profile(target: object | Function, key?: string): void {
   });
 }
 
-function isEnabled(): boolean {
-  return Memory.profiler?.start !== undefined;
-}
-
 function record(key: string, time: number) {
+  if (!isProfilingEnabled) return;
+
   if (!Memory.profiler) {
     Memory.profiler = defaultProfileMemory();
   }
@@ -180,6 +184,7 @@ function outputProfilerData() {
   }
 
   let totalTicks = Memory.profiler.total;
+
   if (Memory.profiler.start) {
     totalTicks += Game.time - Memory.profiler.start;
   }
@@ -205,6 +210,7 @@ function outputProfilerData() {
     result.callsPerTick = calls / totalTicks;
     result.cpuPerTick = time / totalTicks;
     totalCpu += result.cpuPerTick;
+
     return result as OutputData;
   });
 

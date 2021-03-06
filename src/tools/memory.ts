@@ -34,6 +34,8 @@ export const setupMemory: () => void = () => {
 
 export const setupInitialMemory: () => void = () => {
   setupMemory();
+  Memory.profiler = defaultProfileMemory();
+  RawMemory.set(JSON.stringify(Memory));
 };
 
 export const shutdownMemory: () => void = () => {
