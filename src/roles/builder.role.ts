@@ -1,7 +1,7 @@
-import { defaultCreepMemory } from "config/creep";
-import { Profile } from "profiler";
-import { logger } from "tools/logger";
-import { executeAction } from "tools/utils";
+import { defaultCreepMemory } from "../config/creep";
+import { Profile } from "../profiler";
+import { logger } from "../tools/logger";
+import { executeAction } from "../tools/utils";
 import { BaseRole, BaseRoleMemory } from "./abstract.role";
 import { getTargetStructures } from "./harvester.role";
 import { SharedTasks } from "./shared/shared-tasks";

@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "rootDir": ".",
+    "outDir": "../dist",
+    "moduleResolution": "node",
+    "module": "esnext",
+    "lib": ["esnext"],
+    "target": "es2017",
+    "allowSyntheticDefaultImports": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
+    "sourceMap": true,
+    "noUnusedLocals": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "skipLibCheck": true,
+    "strict": true,
+  },
+  "include": [
+    "./**/*.ts",
+    "./**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false,
+  "references": [      // this is how we declare a dependency from
+    { "path": "../" }  // this project to the one at the root dir`
+  ]
+}

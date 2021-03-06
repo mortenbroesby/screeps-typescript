@@ -1,8 +1,8 @@
-import { defaultCreepMemory } from "config/creep";
-import { defaultSettings } from "config/settings";
-import Constants from "global/constants";
-import { Profile } from "profiler";
-import { logger } from "tools/logger";
+import { defaultCreepMemory } from "../config/creep";
+import { defaultSettings } from "../config/settings";
+import Constants from "../global/constants";
+import { Profile } from "../profiler";
+import { logger } from "../tools/logger";
 
 import { Service } from "./abstract.service";
 

@@ -1,4 +1,4 @@
-import { Priority } from "enums";
+import { Priority } from "../enums";
 
 const minimumCreepsOfType: () => MinimumCreepCountMap = () => ({
   harvester: {

@@ -1,8 +1,8 @@
-import { Profile } from "profiler";
 import ScreepsCache from "screeps-lru-cache";
 
-import { Manager } from "services/room/managers/abstract.manager";
-import { CreepManager } from "services/room/managers/creep.manager";
+import { Profile } from "../profiler";
+import { Manager } from "../services/room/managers/abstract.manager";
+import { CreepManager } from "../services/room/managers/creep.manager";
 
 import { Service } from "./abstract.service";
 

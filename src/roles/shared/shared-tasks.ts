@@ -1,4 +1,4 @@
-import { Profile } from "profiler";
+import { Profile } from "../../profiler";
 
 @Profile
 export class SharedTasks {

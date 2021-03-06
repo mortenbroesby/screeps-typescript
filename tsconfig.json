@@ -1,24 +1,11 @@
 {
   "compilerOptions": {
-    "module": "esnext",
-    "lib": ["esnext"],
-    "target": "es2017",
-    "moduleResolution": "Node",
-    "outDir": "dist",
-    "baseUrl": "src/",
-    "sourceMap": true,
-    "strict": true,
-    "experimentalDecorators": true,
-    "noImplicitReturns": true,
-    "allowSyntheticDefaultImports": true,
-    "allowUnreachableCode": false,
-    "skipLibCheck": true
+    "rootDir": ".",
+    "outDir": ".",  // If out path for a file is same as its src path, nothing will be emitted
+    "resolveJsonModule": true,
+    "composite": true // required on the dependency project for references to work
   },
-  "include": [
-    "./**/*.ts",
-    "./**/*.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
+  "files": [
+    "package.json"
   ]
 }

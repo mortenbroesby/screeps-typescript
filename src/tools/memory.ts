@@ -1,5 +1,5 @@
-import { defaultProfileMemory } from "profiler";
-import { defaultSettings } from "config/settings";
+import { defaultProfileMemory } from "../profiler";
+import { defaultSettings } from "../config/settings";
 
 const defaultMemory: () => Memory = () => ({
   powerCreeps: {},

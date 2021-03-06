@@ -1,13 +1,12 @@
-import { defaultCreepMemory } from "config/creep";
-import { defaultSettings } from "config/settings";
-import { Profile } from "profiler";
-import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
-import { BuilderRole } from "roles/builder.role";
-import { HarvesterRole } from "roles/harvester.role";
-import { UpgraderRole } from "roles/upgrader.role";
-import { logger } from "tools/logger";
-import { executeAction } from "tools/utils";
-
+import { defaultCreepMemory } from "../../../config/creep";
+import { defaultSettings } from "../../../config/settings";
+import { Profile } from "../../../profiler";
+import { BaseRole, BaseRoleMemory } from "../../../roles/abstract.role";
+import { BuilderRole } from "../../../roles/builder.role";
+import { HarvesterRole } from "../../../roles/harvester.role";
+import { UpgraderRole } from "../../../roles/upgrader.role";
+import { logger } from "../../../tools/logger";
+import { executeAction } from "../../../tools/utils";
 import { Manager } from "./abstract.manager";
 
 interface CreepCollection {

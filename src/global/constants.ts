@@ -3,7 +3,7 @@ interface IConstants {
 }
 
 const Constants: IConstants = {
-  VERSION: "1.1.6"
+  VERSION: "1.1.7"
 };
 
 export default Constants;

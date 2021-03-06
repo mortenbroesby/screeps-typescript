@@ -1,10 +1,9 @@
-import { Service } from "services/abstract.service";
-import { RoomService } from "services/room.service";
+import { Profile } from "../profiler";
 
+import { Service } from "../services/abstract.service";
+import { RoomService } from "../services/room.service";
 import { DebugService } from "../services/debug.service";
 import { MemoryService } from "../services/memory.service";
-
-import { Profile } from "profiler";
 
 @Profile
 export class Brain {

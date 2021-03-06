@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 "use strict";
 
 import commonjs from "@rollup/plugin-commonjs";
@@ -59,7 +57,7 @@ export default {
 
     commonjs(),
 
-    typescript({ tsconfig: "./tsconfig.json" }),
+    typescript({ tsconfig: "./src/tsconfig.build.json" }),
 
     resolve({
       browser: true,
