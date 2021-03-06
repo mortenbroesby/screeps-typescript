@@ -16,6 +16,8 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
+    "allowUnreachableCode": false,
+    "noImplicitReturns": true,
     "strict": true,
   },
   "include": [
