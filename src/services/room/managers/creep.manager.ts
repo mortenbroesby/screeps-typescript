@@ -103,34 +103,55 @@ export class CreepManager extends Manager {
       return logger.debug(`[Abort Spawn] Is already spawning: ${this.spawning.name}`);
     }
 
-    const minimumCreepsOfType = Memory.settings?.minimumCreepsOfType ?? defaultSettings().minimumCreepsOfType;
-    const sortedEntries = Object.entries(minimumCreepsOfType).sort(([, a], [, b]) => a.priority - b.priority);
+    // TODO: Settings per room + version invalidation
+    const minimumCreepsOfType = defaultSettings().minimumCreepsOfType;
+
+    const sortedMinimums = Object.entries(minimumCreepsOfType)
+      .sort(([, a], [, b]) => a.priority - b.priority)
+      .map(([creepRole, minimum]) => {
+        return {
+          role: creepRole as CreepRole,
+          minimum
+        };
+      });
 
     let didSpawnCreep = false;
 
-    sortedEntries.forEach(([role, creepCountMinimum]) => {
-      if (didSpawnCreep) return;
-
-      didSpawnCreep = this._spawnCreep(creeps, role as CreepRole, creepCountMinimum);
+    Array.from(sortedMinimums).forEach(({ role, minimum }) => {
+      didSpawnCreep = this._spawnCreep({ creeps, role, minCount: minimum.count, didSpawnCreep });
     });
   }
 
-  private _spawnCreep(creeps: Creep[], role: CreepRole, { count }: MinimumCreepCount): boolean {
+  private _spawnCreep({
+    creeps,
+    role,
+    minCount,
+    didSpawnCreep
+  }: {
+    creeps: Creep[];
+    role: CreepRole;
+    minCount: number;
+    didSpawnCreep: boolean;
+  }): boolean {
+    if (didSpawnCreep) {
+      return true;
+    }
+
     type MinimumMap = {
       [key in CreepRole]: () => number;
     };
 
     const minimumMap: MinimumMap = {
-      harvester: () => Math.min(count, this.currentRoom.find(FIND_SOURCES).length),
-      builder: () => count,
-      upgrader: () => count,
-      unassigned: () => count
+      harvester: () => Math.min(minCount, this.currentRoom.find(FIND_SOURCES).length),
+      builder: () => minCount,
+      upgrader: () => minCount,
+      unassigned: () => minCount
     };
 
-    const creepsOfType = _.filter(creeps, creep => creep.memory.role === role);
+    const creepsOfType = _.filter(creeps, creep => creep.memory.role === role).length;
     const minimumCount = minimumMap[role]();
 
-    if (creepsOfType.length < minimumCount) {
+    if (creepsOfType < minimumCount) {
       return this._trySpawningCreep(role);
     }
 
@@ -149,6 +170,7 @@ export class CreepManager extends Manager {
     };
 
     const spawnResponse = this.spawn.spawnCreep([WORK, CARRY, MOVE], creepName, creepOptions);
+
     if (spawnResponse === OK) {
       logger.debug(`Spawned new ${role} with name ${creepName}`);
       return true;
