@@ -51,6 +51,7 @@ interface Profiler {
   start(): void;
   status(): void;
   stop(): void;
+  loop(): void;
   help(): string;
 }
 

@@ -61,12 +61,22 @@ export function init(): Profiler {
     stop() {
       if (isProfilingEnabled) {
         isProfilingEnabled = false;
-        const timeRunning = Game.time - (Memory.profiler.start ?? 0);
-        Memory.profiler.total += timeRunning;
-        delete Memory.profiler.start;
+        Memory.profiler = defaultProfileMemory();
       }
 
       return "Profiler stopped";
+    },
+
+    loop() {
+      if (isProfilingEnabled) {
+        outputProfilerData();
+      } else {
+        const data = Memory.profiler.data ?? {};
+
+        if (_.size(data) > 0) {
+          Memory.profiler.data = {};
+        }
+      }
     },
 
     help(): string {

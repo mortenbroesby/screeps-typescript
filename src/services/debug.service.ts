@@ -48,6 +48,6 @@ export class DebugService extends Service {
   private _logProfilerInfo({ shouldLog }: { shouldLog: boolean }): void {
     if (!shouldLog) return;
 
-    global.Profiler?.output();
+    global.Profiler?.loop();
   }
 }
