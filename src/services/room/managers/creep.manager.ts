@@ -1,5 +1,6 @@
 import { defaultCreepMemory } from "config/creep";
 import { defaultSettings } from "config/settings";
+import { Profile } from "profiler";
 import { BaseRole, BaseRoleMemory } from "roles/abstract.role";
 import { BuilderRole } from "roles/builder.role";
 import { HarvesterRole } from "roles/harvester.role";
@@ -13,6 +14,7 @@ interface CreepCollection {
   [role: string]: Creep[];
 }
 
+@Profile
 export class CreepManager extends Manager {
   private _creepCollection: CreepCollection = {};
 

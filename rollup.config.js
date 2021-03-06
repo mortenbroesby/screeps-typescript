@@ -47,6 +47,8 @@ export default {
     replace({
       PRODUCTION: JSON.stringify(isProduction),
       LOG_LEVEL: JSON.stringify(logLevel),
+      PROFILER_ENABLED: JSON.stringify(!isProduction),
+
       __BUILD_TIME__: JSON.stringify(Date.now()),
       __REVISION__: JSON.stringify(require("git-rev-sync").short())
     }),

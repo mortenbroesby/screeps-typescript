@@ -1,8 +1,10 @@
 import dayjs from "dayjs";
+import { Profile } from "profiler";
 
 import { logger } from "tools/logger";
 import { Service } from "./abstract.service";
 
+@Profile
 export class DebugService extends Service {
   public constructor() {
     super({ name: DebugService.name });
@@ -12,6 +14,7 @@ export class DebugService extends Service {
 
   public loop(): void {
     this._logGameInfo({ shouldLog: false });
+    this._logProfilerInfo({ shouldLog: true });
   }
 
   private _logInitialDebugMessage(): void {
@@ -25,6 +28,10 @@ export class DebugService extends Service {
     logger.global(`Date: ${currentDate}`);
     logger.global(`Time: ${currentTime}`);
 
+    logger.global(
+      `[${Game.time}] - tickLimit: ${Game.cpu.tickLimit} | limit: ${Game.cpu.limit} | Bucket: ${Game.cpu.bucket}`
+    );
+
     logger.global("----------------------------");
   }
 
@@ -36,5 +43,11 @@ export class DebugService extends Service {
     for (const name in Game.rooms) {
       logger.debug(`Room "${name}" has ${Game.rooms[name].energyAvailable} energy`);
     }
+  }
+
+  private _logProfilerInfo({ shouldLog }: { shouldLog: boolean }): void {
+    if (!shouldLog) return;
+
+    global.Profiler?.output();
   }
 }

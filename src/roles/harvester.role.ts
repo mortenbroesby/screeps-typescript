@@ -1,4 +1,5 @@
 import { defaultCreepMemory } from "config/creep";
+import { Profile } from "profiler";
 import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
 
@@ -31,6 +32,7 @@ export interface HarvesterMemory extends BaseRoleMemory {
   state: HarvesterState;
 }
 
+@Profile
 export class HarvesterRole extends BaseRole<HarvesterMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({

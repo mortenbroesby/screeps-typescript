@@ -1,5 +1,6 @@
 declare const PRODUCTION: boolean;
 declare const LOG_LEVEL: number;
+declare const PROFILER_ENABLED: boolean;
 
 declare const __REVISION__: string;
 declare const __BUILD_TIME__: string;
@@ -29,10 +30,32 @@ interface MemorySettings {
 
 interface Memory {
   settings: MemorySettings;
+  profiler: ProfilerMemory;
+}
+
+interface ProfilerMemory {
+  data: { [name: string]: ProfilerData };
+  start?: number;
+  total: number;
+}
+
+interface ProfilerData {
+  calls: number;
+  time: number;
+}
+
+interface Profiler {
+  clear(): void;
+  output(): void;
+  start(): void;
+  status(): void;
+  stop(): void;
+  help(): string;
 }
 
 declare namespace NodeJS {
   interface Global {
     Memory?: Memory;
+    Profiler?: Profiler;
   }
 }

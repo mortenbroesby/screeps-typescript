@@ -1,3 +1,4 @@
+import { defaultProfileMemory } from "profiler";
 import { defaultSettings } from "config/settings";
 
 const defaultMemory: () => Memory = () => ({
@@ -7,6 +8,7 @@ const defaultMemory: () => Memory = () => ({
   spawns: {},
   creeps: {},
 
+  profiler: defaultProfileMemory(),
   settings: defaultSettings()
 });
 

@@ -1,9 +1,12 @@
+import { LogLevel } from "enums";
+import { Brain } from "global/brain";
+import { logger } from "tools/logger";
+// import { setupMemory, shutdownMemory } from "tools/memory";
 import { ErrorMapper } from "utils/ErrorMapper";
 
-import { LogLevel } from "enums";
-import { logger } from "tools/logger";
+import * as Profiler from "./profiler";
 
-import { Brain } from "global/brain";
+global.Profiler = Profiler.init();
 
 logger.logLevel = LOG_LEVEL ?? LogLevel.ERROR;
 
@@ -13,5 +16,7 @@ logger.global("Log-level: ", LogLevel[logger.logLevel]);
 const mainBrain = new Brain();
 
 export const loop = ErrorMapper.wrapLoop(() => {
-  mainBrain.loop(); // Loop main brain
+  // setupMemory();
+  mainBrain.loop();
+  // shutdownMemory();
 });

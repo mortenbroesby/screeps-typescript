@@ -1,16 +1,16 @@
-import { setupInitialMemory, setupMemory, shutdownMemory } from "tools/memory";
-
 import { Service } from "services/abstract.service";
 import { RoomService } from "services/room.service";
+
 import { DebugService } from "../services/debug.service";
 import { MemoryService } from "../services/memory.service";
 
+import { Profile } from "profiler";
+
+@Profile
 export class Brain {
   private _services: Service[] = [];
 
   public constructor() {
-    setupInitialMemory();
-
     this._initialise();
   }
 
@@ -19,12 +19,8 @@ export class Brain {
   }
 
   public loop(): void {
-    setupMemory();
-
     this._services.forEach((service: Service) => {
       service.loop();
     });
-
-    shutdownMemory();
   }
 }

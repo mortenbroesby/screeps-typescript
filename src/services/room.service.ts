@@ -1,3 +1,4 @@
+import { Profile } from "profiler";
 import ScreepsCache from "screeps-lru-cache";
 
 import { Manager } from "services/room/managers/abstract.manager";
@@ -9,6 +10,7 @@ interface RoomCollection {
   [roomName: string]: Manager[];
 }
 
+@Profile
 export class RoomService extends Service {
   private _roomManagers: RoomCollection = {};
   private _cache = new ScreepsCache<string, Room>();
@@ -24,9 +26,7 @@ export class RoomService extends Service {
   }
 
   public loop(): void {
-    this._cache.forEach((room: Room) => {
-      console.log(`cached room: ${room.name}`, room);
-    });
+    this._cache.forEach(() => void 0);
 
     Object.values(this._roomManagers).forEach((managers: Manager[]) => {
       managers.forEach((manager: Manager) => {

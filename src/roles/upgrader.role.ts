@@ -1,4 +1,5 @@
 import { defaultCreepMemory } from "config/creep";
+import { Profile } from "profiler";
 import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
 
@@ -11,6 +12,7 @@ export interface UpgraderMemory extends BaseRoleMemory {
   state: UpgraderState;
 }
 
+@Profile
 export class UpgraderRole extends BaseRole<UpgraderMemory> {
   public constructor(creep: Creep, homeRoom: Room) {
     super({
