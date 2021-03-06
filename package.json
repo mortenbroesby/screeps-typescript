@@ -4,6 +4,7 @@
   "description": "Screeps automation code",
   "main": "index.js",
   "scripts": {
+    "type-check": "tsc --noEmit",
     "lint": "eslint \"src/**/*.ts\"",
     "lint-stats": "eslint \"src/**/*.ts\" --ext .js,.ts --format \"node_modules/eslint-stats/byErrorAndWarning.js\"",
     "build": "rollup -c",

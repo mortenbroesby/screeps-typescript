@@ -4,7 +4,7 @@ import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
 
 import { BaseRole, BaseRoleMemory } from "./abstract.role";
-import { depositTask, harvestTask } from "./shared/shared-tasks";
+import { SharedTasks } from "./shared/shared-tasks";
 
 type TargetStructure = StructureExtension | StructureSpawn | StructureTower;
 
@@ -90,7 +90,7 @@ export class HarvesterRole extends BaseRole<HarvesterMemory> {
   }
 
   private _tryHarvesting(): void {
-    const didHarvest = harvestTask(this.creep);
+    const didHarvest = SharedTasks.harvestTask(this.creep);
     if (!didHarvest) {
       logger.debug(`Creep harvest unsuccessful: ${this.creep.name}`);
     }
@@ -99,7 +99,7 @@ export class HarvesterRole extends BaseRole<HarvesterMemory> {
   private _tryDepositing(): void {
     const targets = getTargetStructures(this.creep.room);
 
-    const didDeposit = depositTask(this.creep, targets);
+    const didDeposit = SharedTasks.depositTask(this.creep, targets);
     if (!didDeposit) {
       logger.debug(`Creep deposit unsuccessful: ${this.creep.name}`);
     }

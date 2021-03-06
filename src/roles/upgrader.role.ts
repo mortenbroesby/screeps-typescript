@@ -4,7 +4,7 @@ import { logger } from "tools/logger";
 import { executeAction } from "tools/utils";
 
 import { BaseRole, BaseRoleMemory } from "./abstract.role";
-import { harvestTask, upgradeTask } from "./shared/shared-tasks";
+import { SharedTasks } from "./shared/shared-tasks";
 
 type UpgraderState = "harvest" | "upgrade";
 
@@ -70,14 +70,14 @@ export class UpgraderRole extends BaseRole<UpgraderMemory> {
   }
 
   private _tryHarvesting(): void {
-    const didHarvest = harvestTask(this.creep);
+    const didHarvest = SharedTasks.harvestTask(this.creep);
     if (!didHarvest) {
       logger.debug(`Creep harvest unsuccessful: ${this.creep.name}`);
     }
   }
 
   private _tryUpgrading(): void {
-    const didUpgrade = upgradeTask(this.creep);
+    const didUpgrade = SharedTasks.upgradeTask(this.creep);
     if (!didUpgrade) {
       logger.debug(`Creep harvest unsuccessful: ${this.creep.name}`);
     }
