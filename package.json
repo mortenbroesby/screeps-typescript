@@ -96,6 +96,7 @@
   "dependencies": {
     "dayjs": "^1.10.4",
     "screeps-lru-cache": "2.1.10",
+    "screeps-modules": "^1.2.0",
     "source-map": "~0.6.1"
   }
 }
