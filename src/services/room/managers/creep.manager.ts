@@ -1,3 +1,4 @@
+import _ from "lodash";
 import { defaultCreepMemory } from "../../../config/creep";
 import { defaultSettings } from "../../../config/settings";
 import { Profile } from "../../../profiler";
