@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable prefer-rest-params */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/unbound-method */
@@ -89,7 +90,7 @@ export class AlreadyWrappedError {
   }
 }
 
-function isConstructorType(fn: any) {
+export function isConstructorType(fn: any): boolean {
   try {
     new fn();
   } catch (err) {
@@ -105,12 +106,5 @@ export function Profile(target: object, key: string): void;
 export function Profile(target: object | Function, key?: string): void {
   if (!PROFILER_ENABLED) {
     return;
-  }
-
-  const isConstructor = isConstructorType(target);
-  if (isConstructor) {
-    const className = target.constructor ? `${target.constructor.name}` : "";
-    const memKey = className + `:${key}`;
-    console.log("memKey: ", memKey);
   }
 }

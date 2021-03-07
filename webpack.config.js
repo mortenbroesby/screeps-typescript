@@ -5,23 +5,6 @@ const path = require("path");
 const webpack = require("webpack");
 
 const isProduction = process.env.NODE_ENV === "production";
-const defaultConfigTarget = isProduction ? "main" : "sim";
-
-let configTarget = defaultConfigTarget;
-
-const destination = process.env.DEST;
-if (!destination) {
-  console.log("No destination specified, using destination: ", configTarget);
-} else if (require("./screeps.json")[destination] == null) {
-  throw new Error("Invalid upload destination");
-} else {
-  configTarget = destination;
-  console.log("Using destination: ", configTarget);
-}
-
-// const configFile = require("./screeps")[configTarget];
-
-/** *******************************/
 
 module.exports = {
   mode: "production",
