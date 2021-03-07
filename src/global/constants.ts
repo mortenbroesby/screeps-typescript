@@ -1,9 +1,11 @@
+const packageJson = require("../../package.json");
+
 interface IConstants {
   VERSION: string;
 }
 
 const Constants: IConstants = {
-  VERSION: "1.2.3"
+  VERSION: packageJson.version
 };
 
 export default Constants;

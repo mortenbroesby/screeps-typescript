@@ -3,36 +3,33 @@ const path = require("path");
 const chalk = require("chalk");
 
 function uploadCodeToScreeps() {
-  const isProduction = process.env.NODE_ENV === "production";
-  const defaultConfigTarget = isProduction ? "main" : "sim";
+  readDirectory()
+    .then(filesInDir => {
+      processFiles(createPromises(filesInDir));
+    })
+    .catch(() => {
+      process.exit(1);
+    });
+}
 
-  let configTarget = defaultConfigTarget;
+function readDirectory() {
+  return new Promise((resolve, reject) => {
+    const dirname = "./dist";
 
-  const destination = process.env.DEST;
-  if (!destination) {
-    console.log("\nNo destination specified, using destination: ", configTarget);
-  } else if (require("./screeps.json")[destination] == null) {
-    throw new Error("Invalid upload destination");
-  } else {
-    configTarget = destination;
-    console.log("Using destination: ", configTarget);
-  }
+    fs.readdir(dirname, (error, fileNames) => {
+      if (error) {
+        reject(error);
+      }
 
-  const configFile = require("./screeps")[configTarget];
+      resolve(fileNames);
+    });
+  });
+}
 
-  let filesToUpload = [];
-  const dirname = "./dist";
+function createPromises(fileNames) {
   const promises = [];
 
-  fs.readdir(dirname, (error, fileNames) => {
-    if (error) {
-      throw new Error(error);
-    }
-
-    filesToUpload = fileNames;
-  });
-
-  for (const file of filesToUpload) {
+  for (const file of fileNames) {
     promises.push(
       new Promise((resolve, reject) => {
         fs.readFile(`./dist/${file}`, "utf-8", (error, data) => {
@@ -48,6 +45,27 @@ function uploadCodeToScreeps() {
     );
   }
 
+  return promises;
+}
+
+function processFiles(promises) {
+  const isProduction = process.env.NODE_ENV === "production";
+  const defaultConfigTarget = isProduction ? "main" : "sim";
+
+  let configTarget = defaultConfigTarget;
+
+  const destination = process.env.DEST;
+  if (!destination) {
+    console.log(`\n\nDeploying to branch: ${chalk.bold.yellow(`${configTarget}`)}`);
+  } else if (require("./screeps.json")[destination] == null) {
+    throw new Error("Invalid upload destination");
+  } else {
+    configTarget = destination;
+    console.log("Using destination: ", configTarget);
+  }
+
+  const configFile = require("./screeps")[configTarget];
+
   Promise.all(promises)
     .then(resolvedFiles => {
       const resolvedModules = resolvedFiles.reduce((modules, file) => {
@@ -55,23 +73,33 @@ function uploadCodeToScreeps() {
         return modules;
       }, {});
 
-      const ScreepsModules = require("screeps-modules");
-
-      const client = new ScreepsModules({
-        email: configFile.email,
-        password: configFile.password,
-        token: configFile.token,
-        serverUrl: "https://screeps.com",
-        gzip: false
-      });
-
-      client.commit(configFile.branch, resolvedModules).catch(error => {
-        console.log("error: ", error);
-      });
+      deployToScreeps(configFile, resolvedModules);
     })
     .catch(error => {
       console.log("error: ", error);
     });
+}
+
+function deployToScreeps(configFile, resolvedModules) {
+  const ScreepsModules = require("screeps-modules");
+
+  const client = new ScreepsModules({
+    email: configFile.email,
+    password: configFile.password,
+    token: configFile.token,
+    serverUrl: "https://screeps.com",
+    gzip: false
+  });
+
+  client.commit(configFile.branch, resolvedModules).catch(error => {
+    console.log("error: ", error);
+  });
+
+  const packageJson = require("./package.json");
+
+  const deployMessage = `Successfully deployed version ${packageJson.version} to Screeps`;
+
+  console.log(chalk.bold.green(`\n${deployMessage}\n`));
 }
 
 const dayjs = require("dayjs");
@@ -83,8 +111,6 @@ buildConfig
   .buildProjectUsingWebpack()
   .then(() => {
     uploadCodeToScreeps();
-
-    console.log(chalk.bold.green("\nDeploy to Screeps succeded.\n"));
   })
   .catch(error => {
     console.log("error: ", error);
