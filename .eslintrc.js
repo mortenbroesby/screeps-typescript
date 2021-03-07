@@ -95,6 +95,7 @@ module.exports = {
     radix: "error",
     "sort-imports": "off",
     "spaced-comment": "error",
+    "@typescript-eslint/no-var-requires": "off",
 
     "@typescript-eslint/naming-convention": [
       "error",

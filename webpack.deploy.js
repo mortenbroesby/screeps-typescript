@@ -1,37 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 const fs = require("fs");
 const path = require("path");
 const chalk = require("chalk");
-const webpack = require("webpack");
-const webpackConfig = require("./webpack.config");
-
-function buildProjectUsingWebpack() {
-  return new Promise(resolve => {
-    webpack(webpackConfig, (error, stats) => {
-      if (error) {
-        throw error;
-      }
-
-      process.stdout.write(
-        stats.toString({
-          colors: true,
-          modules: false,
-          children: false,
-          chunks: false,
-          chunkModules: false
-        })
-      );
-
-      if (stats.hasErrors()) {
-        console.log(chalk.red("  Build failed with errors.\n"));
-        process.exit(1);
-      }
-
-      resolve();
-    });
-  });
-}
 
 function uploadCodeToScreeps() {
   const isProduction = process.env.NODE_ENV === "production";
@@ -51,10 +20,19 @@ function uploadCodeToScreeps() {
 
   const configFile = require("./screeps")[configTarget];
 
-  const files = ["main.js", "main.js.map"];
+  let filesToUpload = [];
+  const dirname = "./dist";
   const promises = [];
 
-  for (const file of files) {
+  fs.readdir(dirname, (error, fileNames) => {
+    if (error) {
+      throw new Error(error);
+    }
+
+    filesToUpload = fileNames;
+  });
+
+  for (const file of filesToUpload) {
     promises.push(
       new Promise((resolve, reject) => {
         fs.readFile(`./dist/${file}`, "utf-8", (error, data) => {
@@ -96,9 +74,17 @@ function uploadCodeToScreeps() {
     });
 }
 
-buildProjectUsingWebpack()
+const dayjs = require("dayjs");
+const buildConfig = require("./webpack.build");
+
+console.log(`Time of execution: ${dayjs(new Date(), "MMMM Do YYYY, HH:mm:ss")}.\n`);
+
+buildConfig
+  .buildProjectUsingWebpack()
   .then(() => {
     uploadCodeToScreeps();
+
+    console.log(chalk.bold.green("\nDeploy to Screeps succeded.\n"));
   })
   .catch(error => {
     console.log("error: ", error);
