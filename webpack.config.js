@@ -37,10 +37,7 @@ module.exports = {
 
     new webpack.DefinePlugin({
       PRODUCTION: JSON.stringify(isProduction),
-      PROFILER_ENABLED: JSON.stringify(!isProduction),
-
-      __BUILD_TIME__: JSON.stringify(Date.now()),
-      __REVISION__: JSON.stringify(require("git-rev-sync").short())
+      PROFILER_ENABLED: JSON.stringify(!isProduction)
     })
   ]
 };

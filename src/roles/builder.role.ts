@@ -77,7 +77,7 @@ export class BuilderRole extends BaseRole<BuilderMemory> {
   }
 
   private _tryBuilding(): void {
-    const constructionTargets = this.creep?.room.find(FIND_CONSTRUCTION_SITES) ?? [];
+    const constructionTargets = this.creep.room.find(FIND_CONSTRUCTION_SITES) ?? [];
 
     if (constructionTargets.length === 0) {
       const depositTargets = getTargetStructures(this.creep.room);
