@@ -1,9 +1,5 @@
 declare const PRODUCTION: boolean;
-declare const LOG_LEVEL: number;
 declare const PROFILER_ENABLED: boolean;
-
-declare const __REVISION__: string;
-declare const __BUILD_TIME__: string;
 
 type CreepRole = "unassigned" | "builder" | "harvester" | "upgrader";
 
@@ -30,7 +26,6 @@ interface MemorySettings {
 
 interface Memory {
   settings: MemorySettings;
-  profiler: ProfilerMemory;
 }
 
 interface ProfilerMemory {
