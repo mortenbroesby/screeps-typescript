@@ -1,3 +1,5 @@
+import "./polyfills";
+
 import { LogLevel } from "./enums";
 import { Brain } from "./global/brain";
 import { logger } from "./tools/logger";
