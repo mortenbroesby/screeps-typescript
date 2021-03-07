@@ -22,11 +22,10 @@ export class DebugService extends Service {
 
     logger.global("Is this production?", PRODUCTION ? "Yes." : "No.");
 
-    const currentDate = dayjs().format("MM.DD.YYYY");
+    const currentDate = dayjs().format("DD MMMM YYYY");
     const currentTime = dayjs().format("HH:mm:ss");
 
-    logger.global(`Date: ${currentDate}`);
-    logger.global(`Time: ${currentTime}`);
+    logger.global(`Date: ${currentDate} - Time: ${currentTime}`);
 
     logger.global(
       `[${Game.time}] - tickLimit: ${Game.cpu.tickLimit} | limit: ${Game.cpu.limit} | Bucket: ${Game.cpu.bucket}`

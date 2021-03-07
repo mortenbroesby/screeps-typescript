@@ -11,10 +11,6 @@ function buildProjectUsingWebpack() {
         throw error;
       }
 
-      const dayjs = require("dayjs");
-
-      console.log(`Time of execution: ${dayjs(new Date(), "MMMM Do YYYY, HH:mm:ss")}.\n`);
-
       process.stdout.write(
         stats.toString({
           colors: true,
@@ -30,8 +26,15 @@ function buildProjectUsingWebpack() {
         process.exit(1);
       }
 
-      const deployMessage = `Successfully built version ${config.version}.`;
+      const deployMessage = `Successfully built version ${config.version}`;
       console.log(chalk.bold.yellow(`\n\n${deployMessage}\n`));
+
+      const dayjs = require("dayjs");
+
+      const currentDate = dayjs().format("DD MMMM YYYY");
+      const currentTime = dayjs().format("HH:mm:ss");
+
+      console.log(`Time of execution: ${currentDate} @ ${currentTime}\n`);
 
       printConfigVariables();
 
