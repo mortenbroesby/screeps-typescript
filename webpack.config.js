@@ -3,6 +3,7 @@
 
 const path = require("path");
 const webpack = require("webpack");
+const WebpackBar = require("webpackbar");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -33,7 +34,10 @@ module.exports = {
   },
 
   plugins: [
-    new webpack.ProgressPlugin(),
+    new WebpackBar({
+      name: "Screeps build",
+      profile: true
+    }),
 
     new webpack.DefinePlugin({
       PRODUCTION: JSON.stringify(isProduction),
