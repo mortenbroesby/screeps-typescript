@@ -3,7 +3,6 @@
 
 const path = require("path");
 const webpack = require("webpack");
-const ScreepsWebpackPlugin = require("./screeps-webpack-plugin");
 
 const isProduction = process.env.NODE_ENV === "production";
 const defaultConfigTarget = isProduction ? "main" : "sim";
@@ -60,15 +59,5 @@ module.exports = {
       __BUILD_TIME__: JSON.stringify(Date.now()),
       __REVISION__: JSON.stringify(require("git-rev-sync").short())
     })
-
-    // new ScreepsWebpackPlugin({
-    //   branch: "$activeWorld",
-    //   email: "EMAIL",
-    //   password: "PASSWORD",
-    //   token: "TOKEN",
-    //   serverUrl: "https://screeps.com",
-    //   serverPassword: "SERVER_PASS",
-    //   gzip: false
-    // })
   ]
 };
