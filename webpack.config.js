@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 const path = require("path");
 const webpack = require("webpack");
 const WebpackBar = require("webpackbar");
 
-const isProduction = process.env.NODE_ENV === "production";
+const { isProduction, nodeEnvironment } = require("./build/variables")();
 
 module.exports = {
   mode: "production",
@@ -41,7 +38,8 @@ module.exports = {
 
     new webpack.DefinePlugin({
       PRODUCTION: JSON.stringify(isProduction),
-      PROFILER_ENABLED: JSON.stringify(!isProduction)
+      PROFILER_ENABLED: JSON.stringify(!isProduction),
+      NODE_ENV: JSON.stringify(nodeEnvironment)
     })
   ]
 };

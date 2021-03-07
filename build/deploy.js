@@ -48,23 +48,6 @@ function createPromises(fileNames) {
 }
 
 function processFiles(promises) {
-  const isProduction = process.env.NODE_ENV === "production";
-  const defaultConfigTarget = isProduction ? "main" : "sim";
-
-  let configTarget = defaultConfigTarget;
-
-  const destination = process.env.DEST;
-  if (!destination) {
-    console.log(`Deploying to branch: ${chalk.bold.yellow(`${configTarget}`)}`);
-  } else if (require("../screeps.json")[destination] == null) {
-    throw new Error("Invalid upload destination");
-  } else {
-    configTarget = destination;
-    console.log("Using destination: ", configTarget);
-  }
-
-  const configFile = require("../screeps")[configTarget];
-
   Promise.all(promises)
     .then(resolvedFiles => {
       const resolvedModules = resolvedFiles.reduce((modules, file) => {
@@ -72,15 +55,18 @@ function processFiles(promises) {
         return modules;
       }, {});
 
-      deployToScreeps(configFile, resolvedModules);
+      deployToScreeps(resolvedModules);
     })
     .catch(error => {
       console.log("error: ", error);
     });
 }
 
-function deployToScreeps(configFile, resolvedModules) {
+function deployToScreeps(resolvedModules) {
   const ScreepsModules = require("screeps-modules");
+  const config = require("../build/variables")();
+
+  const { configFile, version, targetBranch } = config;
 
   const client = new ScreepsModules({
     email: configFile.email,
@@ -94,11 +80,10 @@ function deployToScreeps(configFile, resolvedModules) {
     console.log("error: ", error);
   });
 
-  const packageJson = require("../package.json");
+  let deployMessage = `Successfully deployed version ${chalk.bold.green(version)}`;
+  deployMessage += ` to branch [${chalk.bold.yellow(targetBranch)}]`;
 
-  const deployMessage = `Successfully deployed version ${packageJson.version} to Screeps`;
-
-  console.log(chalk.bold.green(`\n${deployMessage}\n`));
+  console.log(`${deployMessage}\n`);
 }
 
 const buildConfig = require("./webpack.build");
