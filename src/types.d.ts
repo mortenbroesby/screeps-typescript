@@ -29,7 +29,6 @@ interface MemorySettings {
 
 interface Memory {
   settings: MemorySettings;
-  profiler: ProfilerMemory;
 }
 
 interface ProfilerMemory {

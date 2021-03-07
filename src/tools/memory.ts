@@ -1,4 +1,3 @@
-import { defaultProfileMemory } from "../profiler";
 import { defaultSettings } from "../config/settings";
 
 const defaultMemory: () => Memory = () => ({
@@ -8,7 +7,6 @@ const defaultMemory: () => Memory = () => ({
   spawns: {},
   creeps: {},
 
-  profiler: defaultProfileMemory(),
   settings: defaultSettings()
 });
 
@@ -34,8 +32,6 @@ export const setupMemory: () => void = () => {
 
 export const setupInitialMemory: () => void = () => {
   setupMemory();
-  Memory.profiler = defaultProfileMemory();
-  RawMemory.set(JSON.stringify(Memory));
 };
 
 export const shutdownMemory: () => void = () => {

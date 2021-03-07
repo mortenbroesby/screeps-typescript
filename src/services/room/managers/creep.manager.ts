@@ -37,7 +37,7 @@ export class CreepManager extends Manager {
   }
 
   public get spawn(): StructureSpawn | undefined {
-    const allSpawnsInRoom = this._currentRoom.find(FIND_MY_STRUCTURES, {
+    const allSpawnsInRoom = this._currentRoom?.find(FIND_MY_STRUCTURES, {
       filter: structure => structure.structureType === STRUCTURE_SPAWN
     }) as StructureSpawn[];
 
@@ -75,7 +75,7 @@ export class CreepManager extends Manager {
   }
 
   public loop(): void {
-    const creepsInRoom = this.currentRoom.find(FIND_MY_CREEPS);
+    const creepsInRoom = this.currentRoom?.find(FIND_MY_CREEPS);
 
     this._trySpawningCreeps(creepsInRoom);
     this._tryAssigningRoles(creepsInRoom);
@@ -141,7 +141,7 @@ export class CreepManager extends Manager {
     };
 
     const minimumMap: MinimumMap = {
-      harvester: () => Math.min(minCount, this.currentRoom.find(FIND_SOURCES).length),
+      harvester: () => Math.min(minCount, this.currentRoom?.find(FIND_SOURCES).length),
       builder: () => minCount,
       upgrader: () => minCount,
       unassigned: () => minCount
