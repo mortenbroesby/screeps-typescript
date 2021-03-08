@@ -6,15 +6,17 @@ import { Service } from "./abstract.service";
 
 @Profile
 export class DebugService extends Service {
-  public constructor() {
-    super({ name: DebugService.name });
-
+  public initialise(): void {
     this._logInitialDebugMessage();
   }
 
   public loop(): void {
     this._logGameInfo({ shouldLog: false });
     this._logProfilerInfo({ shouldLog: true });
+  }
+
+  public cleanup(): void {
+    // Do nothing for now
   }
 
   private _logInitialDebugMessage(): void {
@@ -48,7 +50,5 @@ export class DebugService extends Service {
 
   private _logProfilerInfo({ shouldLog }: { shouldLog: boolean }): void {
     if (!shouldLog) return;
-
-    global.Profiler?.loop();
   }
 }

@@ -28,12 +28,6 @@ interface Memory {
   settings: MemorySettings;
 }
 
-interface ProfilerMemory {
-  data: { [name: string]: ProfilerData };
-  start?: number;
-  total: number;
-}
-
 interface ProfilerData {
   calls: number;
   time: number;
@@ -42,7 +36,7 @@ interface ProfilerData {
 declare namespace NodeJS {
   interface Global {
     Memory?: Memory;
-    Profiler?: Profiler;
-    Brain?: import("./global/Brain").Brain;
+    Profiler: import("./profiler").Profiler;
+    Brain: import("./global/Brain").Brain;
   }
 }

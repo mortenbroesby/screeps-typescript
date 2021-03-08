@@ -16,10 +16,15 @@ export const initialiseMainLogic: () => void = () => {
 
   global.Profiler = new Profiler();
   global.Brain = new Brain();
+
+  global.Brain.initialise();
 };
 
 export const mainLoopIteration: () => void = () => {
   setupMemory();
-  global.Brain?.loop();
+
+  global.Brain.loop();
+  global.Brain.cleanup();
+
   shutdownMemory();
 };
