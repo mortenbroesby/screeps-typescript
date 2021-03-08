@@ -1,9 +1,9 @@
 import { Brain } from "../global/brain";
-import { Profiler } from "../profiler";
 import { setupInitialMemory, setupMemory, shutdownMemory } from "../tools/memory";
 
 import { LogLevel } from "../enums";
 import { logger } from "../tools/logger";
+import { ErrorMapper } from "../utils/ErrorMapper";
 
 /**
  * Setup pre-requisites before intialisation
@@ -29,16 +29,14 @@ const setupPrerequisites: () => void = () => {
 export const initialiseMainLogic: () => void = () => {
   setupPrerequisites();
 
-  global.Profiler = new Profiler();
   global.Brain = new Brain();
-
   global.Brain.initialise();
 };
 
 /**
  * Expose project logic loop
  */
-export const mainLoopIteration: () => void = () => {
+const mainLoop: () => void = () => {
   setupMemory();
 
   global.Brain.loop();
@@ -46,3 +44,17 @@ export const mainLoopIteration: () => void = () => {
 
   shutdownMemory();
 };
+
+/**
+ * Use main loop if targeting production
+ */
+let exportedLoop = mainLoop;
+
+/**
+ * Wrap loop in ErrorMapper if targeting development
+ */
+if (!IS_PRODUCTION) {
+  exportedLoop = ErrorMapper.wrapLoop(mainLoop);
+}
+
+export const mainLoopIteration = exportedLoop;

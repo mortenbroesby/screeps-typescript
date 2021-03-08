@@ -2,9 +2,10 @@
  * Global build parameters
  */
 declare const NODE_ENV: string;
-declare const IS_PRODUCTION: boolean;
-declare const PROFILER_ENABLED: boolean;
 declare const BUILD_DATE: string;
+declare const IS_PRODUCTION: boolean;
+declare const IS_DEBUG: boolean;
+declare const IS_PROFILER_ENABLED: boolean;
 
 /**
  * Global Screeps types
@@ -42,7 +43,6 @@ interface Memory {
 declare namespace NodeJS {
   interface Global {
     Memory?: Memory;
-    Profiler: import("./profiler").Profiler;
     Brain: import("./global/Brain").Brain;
   }
 }

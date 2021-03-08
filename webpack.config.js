@@ -2,7 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 const WebpackBar = require("webpackbar");
 
-const { isProduction, nodeEnvironment } = require("./build/variables")();
+const { isProduction, isDebug, nodeEnvironment } = require("./build/variables")();
 
 module.exports = {
   mode: "production",
@@ -38,9 +38,9 @@ module.exports = {
 
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(nodeEnvironment),
+      BUILD_DATE: JSON.stringify(Date.now()),
       IS_PRODUCTION: JSON.stringify(isProduction),
-      PROFILER_ENABLED: JSON.stringify(!isProduction),
-      BUILD_DATE: JSON.stringify(Date.now())
+      IS_DEBUG: JSON.stringify(isDebug)
     })
   ]
 };

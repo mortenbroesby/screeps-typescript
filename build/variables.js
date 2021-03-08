@@ -20,7 +20,7 @@ const environment = process.env.npm_config_environment;
 const isProduction = environment === "production";
 const isDebug = process.env.npm_config_debug === "true";
 const branchOverride = process.env.npm_config_branch;
-const defaultBranch = isProduction ? "main" : "sim";
+const defaultBranch = isProduction ? "main" : "development";
 
 /**
  * Setup screeps config

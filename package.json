@@ -1,6 +1,6 @@
 {
   "name": "screeps-typescript",
-  "version": "3.1.7",
+  "version": "3.1.9",
   "description": "Screeps automation code",
   "main": "index.js",
   "scripts": {
@@ -71,7 +71,6 @@
     "webpackbar": "^5.0.0-3"
   },
   "dependencies": {
-    "core-js": "^3.9.1",
     "dayjs": "^1.10.4",
     "screeps-lru-cache": "2.1.10",
     "source-map": "~0.6.1"

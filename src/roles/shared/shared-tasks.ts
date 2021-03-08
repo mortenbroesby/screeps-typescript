@@ -1,7 +1,5 @@
 import _ from "lodash";
-import { Profile } from "../../profiler";
 
-@Profile
 export class SharedTasks {
   public static harvestTask(creep: Creep): boolean {
     if (creep.store.getFreeCapacity() > 0) {

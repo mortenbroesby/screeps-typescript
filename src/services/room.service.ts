@@ -1,4 +1,3 @@
-import { Profile } from "../profiler";
 import { Manager } from "../services/room/managers/abstract.manager";
 import { CreepManager } from "../services/room/managers/creep.manager";
 
@@ -8,7 +7,6 @@ interface RoomCollection {
   [roomName: string]: Manager[];
 }
 
-@Profile
 export class RoomService extends Service {
   private _roomManagers: RoomCollection = {};
 

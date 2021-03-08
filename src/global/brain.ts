@@ -1,11 +1,8 @@
-import { Profile } from "../profiler";
-
 import { Service } from "../services/abstract.service";
 import { RoomService } from "../services/room.service";
 import { DebugService } from "../services/debug.service";
 import { MemoryService } from "../services/memory.service";
 
-@Profile
 export class Brain {
   private _managers: Map<string, Service> = new Map();
 

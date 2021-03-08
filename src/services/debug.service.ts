@@ -1,10 +1,8 @@
 import dayjs from "dayjs";
 
-import { Profile } from "../profiler";
 import { logger } from "../tools/logger";
 import { Service } from "./abstract.service";
 
-@Profile
 export class DebugService extends Service {
   public initialise(): void {
     this._logInitialDebugMessage();
