@@ -1,12 +1,16 @@
-import { defaultSettings } from "../config/settings";
-import Constants from "../global/constants";
-import { logger } from "../tools/logger";
+import Constants from "../../../config/constants";
 
-import { Service } from "./abstract.service";
+import { logger } from "../../../tools/logger";
+import { Brain, Neuron } from "../..";
+import { defaultSettings } from "../../../config/settings";
 
-export class MemoryService extends Service {
+export class MemoryService implements Neuron {
+  public constructor(public brain: Brain) {
+    brain.register(this, this.constructor.name);
+  }
+
   public initialise(): void {
-    logger.global(`Brain version: ${Constants.VERSION}`);
+    logger.global(`Brain version: ${Constants.version}`);
   }
 
   public loop(): void {
@@ -39,5 +43,9 @@ export class MemoryService extends Service {
 
       Memory.settings = defaultSettings();
     }
+  }
+
+  public log(): void {
+    // Do nothing for now
   }
 }

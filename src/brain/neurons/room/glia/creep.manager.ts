@@ -1,38 +1,29 @@
 import _ from "lodash";
-import { defaultCreepMemory } from "../../../config/creep";
-import { defaultSettings } from "../../../config/settings";
-import { BaseRole, BaseRoleMemory } from "../../../roles/abstract.role";
-import { BuilderRole } from "../../../roles/builder.role";
-import { HarvesterRole } from "../../../roles/harvester.role";
-import { UpgraderRole } from "../../../roles/upgrader.role";
-import { logger } from "../../../tools/logger";
-import { executeAction } from "../../../tools/utils";
-import { Manager } from "./abstract.manager";
 
-interface CreepCollection {
-  [role: string]: Creep[];
-}
+import { defaultCreepMemory } from "../../../../config/creep";
+import { defaultSettings } from "../../../../config/settings";
+import { BaseRole, BaseRoleMemory } from "../../../../roles/abstract.role";
+import { BuilderRole } from "../../../../roles/builder.role";
+import { HarvesterRole } from "../../../../roles/harvester.role";
+import { UpgraderRole } from "../../../../roles/upgrader.role";
+import { logger } from "../../../../tools/logger";
+import { executeAction } from "../../../../tools/utils";
+import { RoomNeuron, Glia } from "../room.neuron";
 
-export class CreepManager extends Manager {
-  private _creepCollection: CreepCollection = {};
-
+export class CreepManager implements Glia {
   private _currentRoom: Room;
 
   public get currentRoom(): Room {
     return this._currentRoom;
   }
 
-  public constructor(room: Room) {
-    super({ name: CreepManager.name });
-
+  public constructor(public brain: RoomNeuron, room: Room) {
+    brain.register(this, this.constructor.name);
     this._currentRoom = room;
-
-    this._creepCollection = this._createCollection();
-    // console.log(JSON.stringify(this.creepCollection))
   }
 
-  public get collection(): CreepCollection {
-    return this._creepCollection;
+  public initialise(): void {
+    // Do nothing for now
   }
 
   public get spawn(): StructureSpawn | undefined {
@@ -46,31 +37,6 @@ export class CreepManager extends Manager {
 
   public get spawning(): Spawning | null {
     return this.spawn?.spawning ?? null;
-  }
-
-  private _createCollection(): CreepCollection {
-    const collection: CreepCollection = {};
-
-    for (const name in Game.creeps) {
-      const creep = Game.creeps[name];
-
-      const creepRole: CreepRole = creep.memory.role ?? "unassigned";
-
-      if (creepRole === "unassigned") {
-        logger.warn(`Creep with unknown role: ${creep.name} Pos: ${creep.pos.roomName}`);
-        logger.warn("Removing creep from game...");
-
-        creep.suicide();
-      }
-
-      if (collection[creepRole] === undefined) {
-        collection[creepRole] = [creep];
-      } else {
-        collection[creepRole].push(creep);
-      }
-    }
-
-    return collection;
   }
 
   public loop(): void {
@@ -206,5 +172,13 @@ export class CreepManager extends Manager {
     if (!didExecute) {
       logger.debug(`Creep is missing role: ${creep.name}`);
     }
+  }
+
+  public log(): void {
+    // Do nothing for now
+  }
+
+  public cleanup(): void {
+    // Do nothing for now
   }
 }

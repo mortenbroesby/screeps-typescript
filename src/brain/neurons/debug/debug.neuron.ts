@@ -1,16 +1,20 @@
 import dayjs from "dayjs";
 
-import { logger } from "../tools/logger";
-import { Service } from "./abstract.service";
+import Constants from "../../../config/constants";
+import { logger } from "../../../tools/logger";
+import { Brain, Neuron } from "../..";
 
-export class DebugService extends Service {
+export class DebugNeuron implements Neuron {
+  public constructor(public brain: Brain) {
+    brain.register(this, this.constructor.name);
+  }
+
   public initialise(): void {
     this._logInitialDebugMessage();
   }
 
   public loop(): void {
     this._logGameInfo({ shouldLog: false });
-    this._logProfilerInfo({ shouldLog: true });
   }
 
   public cleanup(): void {
@@ -20,7 +24,7 @@ export class DebugService extends Service {
   private _logInitialDebugMessage(): void {
     logger.global("----------------------------");
 
-    logger.global("Is this production?", IS_PRODUCTION ? "Yes." : "No.");
+    logger.global("Is this production?", Constants.isProduction ? "Yes." : "No.");
 
     const currentDate = dayjs().format("DD MMMM YYYY");
     const currentTime = dayjs().format("HH:mm:ss");
@@ -46,7 +50,7 @@ export class DebugService extends Service {
     }
   }
 
-  private _logProfilerInfo({ shouldLog }: { shouldLog: boolean }): void {
-    if (!shouldLog) return;
+  public log(): void {
+    // Do nothing for now
   }
 }

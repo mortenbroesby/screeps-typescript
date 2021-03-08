@@ -12,14 +12,7 @@ const defaultMemory: () => Memory = () => ({
 
 function getMemory(): Memory {
   try {
-    const parsedMemory: Memory = JSON.parse(RawMemory.get());
-
-    const settingsVersion = parsedMemory?.settings?.version ?? "-1";
-    if (settingsVersion !== defaultSettings().version) {
-      throw new Error("Invalid settings version");
-    }
-
-    return parsedMemory;
+    return JSON.parse(RawMemory.get());
   } catch (error) {
     return defaultMemory();
   }

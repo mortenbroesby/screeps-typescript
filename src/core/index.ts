@@ -1,5 +1,7 @@
-import { Brain } from "../global/brain";
+import { Brain } from "../brain";
 import { setupInitialMemory, setupMemory, shutdownMemory } from "../tools/memory";
+
+import Constants from "../config/constants";
 
 import { LogLevel } from "../enums";
 import { logger } from "../tools/logger";
@@ -9,7 +11,7 @@ import { ErrorMapper } from "../utils/ErrorMapper";
  * Setup pre-requisites before intialisation
  */
 const setupPrerequisites: () => void = () => {
-  logger.logLevel = IS_PRODUCTION ? LogLevel.ERROR : LogLevel.DEBUG;
+  logger.logLevel = Constants.isProduction ? LogLevel.ERROR : LogLevel.DEBUG;
 
   logger.global("Log-level: ", LogLevel[logger.logLevel]);
 
@@ -53,7 +55,7 @@ let exportedLoop = mainLoop;
 /**
  * Wrap loop in ErrorMapper if targeting development
  */
-if (!IS_PRODUCTION) {
+if (!Constants.isProduction) {
   exportedLoop = ErrorMapper.wrapLoop(mainLoop);
 }
 

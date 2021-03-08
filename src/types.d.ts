@@ -42,6 +42,6 @@ interface Memory {
 declare namespace NodeJS {
   interface Global {
     Memory?: Memory;
-    Brain: import("./global/Brain").Brain;
+    Brain: import("./brain").Brain;
   }
 }
