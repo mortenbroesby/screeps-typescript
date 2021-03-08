@@ -96,6 +96,7 @@ module.exports = {
     "sort-imports": "off",
     "spaced-comment": "error",
     "@typescript-eslint/no-var-requires": "off",
+    "@typescript-eslint/ban-types": "off",
 
     "@typescript-eslint/naming-convention": [
       "error",
