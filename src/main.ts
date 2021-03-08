@@ -1,12 +1,7 @@
 import "./polyfills";
 import { ErrorMapper } from "./utils/ErrorMapper";
 
-import { setupPrerequisites, initialiseMainLogic, mainLoopIteration } from "./core";
-
-/**
- * Setup variables before initialisation
- */
-setupPrerequisites();
+import { initialiseMainLogic, mainLoopIteration } from "./core";
 
 /**
  * Initialise project logic

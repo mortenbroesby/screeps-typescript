@@ -1,6 +1,14 @@
-declare const PRODUCTION: boolean;
+/**
+ * Global build parameters
+ */
+declare const NODE_ENV: string;
+declare const IS_PRODUCTION: boolean;
 declare const PROFILER_ENABLED: boolean;
+declare const BUILD_DATE: string;
 
+/**
+ * Global Screeps types
+ */
 type CreepRole = "unassigned" | "builder" | "harvester" | "upgrader";
 
 interface CreepMemory {
@@ -28,11 +36,9 @@ interface Memory {
   settings: MemorySettings;
 }
 
-interface ProfilerData {
-  calls: number;
-  time: number;
-}
-
+/**
+ * Global Node types
+ */
 declare namespace NodeJS {
   interface Global {
     Memory?: Memory;

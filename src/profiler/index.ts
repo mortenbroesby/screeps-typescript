@@ -1,59 +1,50 @@
-import { LRUCache } from "screeps-lru-cache";
-
-interface OutputData {
-  name: string;
-  calls: number;
-  cpuPerCall: number;
-  callsPerTick: number;
-  cpuPerTick: number;
-}
-
-export const profilerCache = new LRUCache<string, OutputData>();
-
 export class Profiler {
-  private _isProfilingEnabled = false;
+  private _isEnabled = false;
 
-  public isEnabled(): boolean {
-    return this._isProfilingEnabled;
+  public start(): string {
+    this._isEnabled = true;
+    return "Profiler started";
   }
 
-  public clear(): string {
-    return "Profiler Memory cleared";
+  public stop(): string {
+    this._isEnabled = false;
+    return "Profiler stopped";
   }
 
   public status(): string {
-    if (this._isProfilingEnabled) {
+    if (this._isEnabled) {
       return "Profiler is running";
     }
 
     return "Profiler is stopped";
   }
 
-  public start(): string {
-    return "Profiler started";
-  }
-
-  public stop(): string {
-    this._isProfilingEnabled = false;
-    return "Profiler stopped";
-  }
-
-  public loop(): void {
-    if (this._isProfilingEnabled) {
-      // Output profiler data
+  public output(): string {
+    if (!this._isEnabled) {
+      return this.status();
     }
+
+    return "Profiler output not implemented yet";
   }
 
   public help(): string {
     let helpMessage = "";
 
-    helpMessage += "Profiler.start() - Starts the profiler\n";
-    helpMessage += "Profiler.stop() - Stops/Pauses the profiler\n";
-    helpMessage += "Profiler.status() - Returns whether is profiler is currently running or not\n";
-    helpMessage += "Profiler.output() - Pretty-prints the collected profiler data to the console\n";
+    helpMessage += "Profiler.start() - Starts the profiler \n";
+    helpMessage += "Profiler.stop() - Stops/Pauses the profiler \n";
+    helpMessage += "Profiler.status() - Returns whether is profiler is currently running or not \n";
+    helpMessage += "Profiler.output() - Pretty-prints the collected profiler data to the console \n";
 
     return helpMessage;
   }
+}
+
+export interface OutputData {
+  name: string;
+  calls: number;
+  cpuPerCall: number;
+  callsPerTick: number;
+  cpuPerTick: number;
 }
 
 export function Profile(target: Function): void;

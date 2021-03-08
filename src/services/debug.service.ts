@@ -22,18 +22,18 @@ export class DebugService extends Service {
   private _logInitialDebugMessage(): void {
     logger.global("----------------------------");
 
-    logger.global("Is this production?", PRODUCTION ? "Yes." : "No.");
+    logger.global("Is this production?", IS_PRODUCTION ? "Yes." : "No.");
 
     const currentDate = dayjs().format("DD MMMM YYYY");
     const currentTime = dayjs().format("HH:mm:ss");
 
     logger.global(`Date: ${currentDate} - Time: ${currentTime}`);
 
-    logger.global(
-      `[${Game.time}] - tickLimit: ${Game.cpu.tickLimit} | limit: ${Game.cpu.limit ?? "Infinite"} | Bucket: ${
-        Game.cpu.bucket
-      }`
-    );
+    let cpuMessage = `Time: [${Game.time}] - tickLimit: ${Game.cpu.tickLimit}`;
+    cpuMessage += ` | limit: ${Game.cpu.limit ?? "Infinite"}`;
+    cpuMessage += ` | Bucket: ${Game.cpu.bucket}`;
+
+    logger.global(cpuMessage);
 
     logger.global("----------------------------");
   }

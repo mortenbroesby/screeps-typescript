@@ -37,9 +37,10 @@ module.exports = {
     }),
 
     new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(isProduction),
+      NODE_ENV: JSON.stringify(nodeEnvironment),
+      IS_PRODUCTION: JSON.stringify(isProduction),
       PROFILER_ENABLED: JSON.stringify(!isProduction),
-      NODE_ENV: JSON.stringify(nodeEnvironment)
+      BUILD_DATE: JSON.stringify(Date.now())
     })
   ]
 };
