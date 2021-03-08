@@ -28,7 +28,9 @@ export class DebugService extends Service {
     logger.global(`Date: ${currentDate} - Time: ${currentTime}`);
 
     logger.global(
-      `[${Game.time}] - tickLimit: ${Game.cpu.tickLimit} | limit: ${Game.cpu.limit} | Bucket: ${Game.cpu.bucket}`
+      `[${Game.time}] - tickLimit: ${Game.cpu.tickLimit} | limit: ${Game.cpu.limit ?? "Infinite"} | Bucket: ${
+        Game.cpu.bucket
+      }`
     );
 
     logger.global("----------------------------");

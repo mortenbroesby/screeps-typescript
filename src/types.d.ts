@@ -39,20 +39,10 @@ interface ProfilerData {
   time: number;
 }
 
-interface Profiler {
-  isEnabled(): boolean;
-  clear(): void;
-  output(): void;
-  start(): void;
-  status(): void;
-  stop(): void;
-  loop(): void;
-  help(): string;
-}
-
 declare namespace NodeJS {
   interface Global {
     Memory?: Memory;
     Profiler?: Profiler;
+    Brain?: import("./global/Brain").Brain;
   }
 }
