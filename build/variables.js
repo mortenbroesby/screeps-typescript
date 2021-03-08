@@ -21,6 +21,7 @@ const isProduction = environment === "production";
 const isDebug = process.env.npm_config_debug === "true";
 const branchOverride = process.env.npm_config_branch;
 const defaultBranch = isProduction ? "main" : "development";
+const customConfig = process.env.npm_config_config;
 
 /**
  * Setup screeps config
@@ -37,7 +38,7 @@ if (branchOverride !== "unknown") {
 }
 
 const packageJson = require("../package.json");
-const configFile = require("../screeps")[targetBranch];
+const screepsConfig = customConfig || require("../screeps")[targetBranch];
 const version = packageJson.version;
 
 /**
@@ -51,7 +52,7 @@ function getEnvironmentVariables() {
     isProduction,
     isDebug,
     targetBranch,
-    configFile
+    screepsConfig
   };
 }
 
