@@ -5,7 +5,6 @@ declare const NODE_ENV: string;
 declare const BUILD_DATE: string;
 declare const IS_PRODUCTION: boolean;
 declare const IS_DEBUG: boolean;
-declare const IS_PROFILER_ENABLED: boolean;
 
 /**
  * Global Screeps types
