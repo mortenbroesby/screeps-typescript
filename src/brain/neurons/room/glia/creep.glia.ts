@@ -10,7 +10,7 @@ import { logger } from "../../../../tools/logger";
 import { executeAction } from "../../../../tools/utils";
 import { RoomNeuron, Glia } from "../room.neuron";
 
-export class CreepManager implements Glia {
+export class CreepGlia implements Glia {
   private _currentRoom: Room;
 
   public get currentRoom(): Room {

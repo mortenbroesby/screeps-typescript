@@ -5,7 +5,7 @@ interface CreepCollection {
   [role: string]: Creep[];
 }
 
-export class IntelManager implements Glia {
+export class IntelGlia implements Glia {
   private _creepCollection: CreepCollection = {};
 
   private _currentRoom: Room;

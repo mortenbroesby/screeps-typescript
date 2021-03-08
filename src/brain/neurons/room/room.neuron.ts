@@ -1,6 +1,6 @@
 import { Controller, Subject } from "../../../core/controller";
 import { Brain, Neuron } from "../..";
-import { CreepManager } from "./glia/creep.manager";
+import { CreepGlia } from "./glia/creep.glia";
 
 export interface Glia extends Subject {
   log(): void;
@@ -13,7 +13,7 @@ export class RoomNeuron extends Controller<Glia> implements Neuron {
     brain.register(this, this.constructor.name);
 
     Object.values(Game.rooms).forEach((room: Room) => {
-      new CreepManager(this, room);
+      new CreepGlia(this, room);
     });
   }
 
